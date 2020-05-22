@@ -1,8 +1,9 @@
 from flaskapp import app, db
 from flask import render_template, redirect, url_for, flash, request
-from flaskapp.forms import RegistrationForm, LoginForm, PostForm
+from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm
 from flaskapp.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
+from flaskapp.utils import save_picture
 
 
 
@@ -103,3 +104,22 @@ def delete_post(post_id):
     else:
         flash("You don't have delete priviledge for that post!", 'danger')
         return redirect(url_for('home'))
+
+
+
+@app.route("/account", methods=['GET', 'POST'])
+@login_required
+def account():
+    form = AccountUpdateForm()
+    
+    if form.validate_on_submit():
+        current_user.image_file = save_picture(form.picture.data, 'pfp')
+        current_user.username = form.username.data
+        db.session.commit()
+        flash("Account infoo updated", 'success')
+        return redirect(url_for('account'))
+    # pre populate form
+    if request.method == 'GET':
+        form.username.data = current_user.username
+        
+    return render_template("account.html", title=current_user.username, form = form, image_url=current_user.image_file)
