@@ -9,6 +9,9 @@
                     <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
                 </div>
             </div>
+            {% if post.author == current_user %}
+                    <small><a href="{{ url_for('delete_post', post_id=post.pid) }}">delete</a></small>
+            {% endif %}
         </article>
     </div>
 {% endblock content %}

@@ -72,7 +72,7 @@ def new_post():
 
 
 
-@app.route("/user/<string:username>/")
+@app.route("/user/<string:username>")
 def get_user(username):
     user = User.query.filter_by(username=username).first()
     posts = user.posts
@@ -86,4 +86,20 @@ def get_post():
     post_id = request.args.get('id')
     post = Post.query.get_or_404(int(post_id))
 
-    return render_template("post.html", post=post)   
+    return render_template("post.html", post=post) 
+
+
+
+@app.route("/post/<int:post_id>/delete") 
+@login_required
+def delete_post(post_id):
+    post = Post.query.get_or_404(post_id)
+
+    if post.author == current_user:
+        db.session.delete(post)
+        db.session.commit()
+        flash("Post deleted", 'success')
+        return redirect(url_for('home'))
+    else:
+        flash("You don't have delete priviledge for that post!", 'danger')
+        return redirect(url_for('home'))
