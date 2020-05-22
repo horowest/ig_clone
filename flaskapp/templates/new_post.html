@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div>
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <fieldset>
+                <legend>New post</legend>
+                <div class="form-group" >
+                    {{ form.content.label() }}
+                    <div>
+                        {{ form.content() }}
+                        {% if form.content.errors %}
+                            {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </fieldset>
+            <div>
+                {{ form.submit(class="btn btn-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock %}

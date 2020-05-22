@@ -6,8 +6,8 @@
                 <div>
                     <p>{{ post.content }}</p>
                     <div>
-                        <a href="#">{{ post.author }}</a>
-                        <small class="text-muted">{{ post.date_posted }}</small> 
+                        <a href="#">{{ post.author.username }}</a>
+                        <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
                     </div>
                 </div>
             </article>

@@ -1,34 +1,22 @@
 from flaskapp import app, db
 from flask import render_template, redirect, url_for, flash, request
-from flaskapp.forms import RegistrationForm, LoginForm
-from flaskapp.models import User
+from flaskapp.forms import RegistrationForm, LoginForm, PostForm
+from flaskapp.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-
-
-posts = [
-    {
-        'author':'akash',
-        'content':'This is a first post',
-        'date_posted':'21 May, 2020'
-    },
-    {
-        'author':'horowest',
-        'content':'This is a second post',
-        'date_posted':'21 May, 2020'
-    }
-]
 
 
 
 @app.route("/")
 def home():
+    posts = Post.query.order_by(Post.date_posted.desc()).all()
+
     return render_template("home.html", title="FlaskApp", posts=posts)
 
 
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
-    if current_user:
+    if current_user.is_authenticated:
         return redirect(url_for('home'))
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -51,7 +39,10 @@ def login():
         if user and user.password == form.password.data:
             login_user(user, remember=form.remember.data)
             flash("You have been logged in successfully", 'success')
-            return redirect(url_for('home'))
+
+            next_page = request.args.get('next')
+
+            return redirect(next_page or url_for('home'))
         else:
             flash("username or password is incorrect", 'danger')
             return redirect(url_for('login'))
@@ -64,4 +55,17 @@ def login():
 def logout():
     logout_user()
     return redirect(url_for('login'))
-    
+
+
+
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash("Posted successfully", 'success')
+        return redirect(url_for('home'))
+    return render_template("new_post.html", title="Post", form=form)
