@@ -69,3 +69,21 @@ def new_post():
         flash("Posted successfully", 'success')
         return redirect(url_for('home'))
     return render_template("new_post.html", title="Post", form=form)
+
+
+
+@app.route("/user/<string:username>/")
+def get_user(username):
+    user = User.query.filter_by(username=username).first()
+    posts = user.posts
+    posts.reverse()
+    return render_template("user.html", title=user.username, posts=posts)
+
+
+
+@app.route("/post/")
+def get_post():
+    post_id = request.args.get('id')
+    post = Post.query.get_or_404(int(post_id))
+
+    return render_template("post.html", post=post)   
