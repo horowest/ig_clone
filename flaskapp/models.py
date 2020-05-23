@@ -20,6 +20,19 @@ followers = db.Table('followers',
 )
 
 
+likes = db.Table('like',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.pid')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.uid'))
+)
+
+
+comments = db.Table('comments',
+    db.Column('post_id', db.Integer, db.ForeignKey('post.pid')),
+    db.Column('user_id', db.Integer, db.ForeignKey('user.uid')),
+    db.Column('comment', db.String(140), nullable=False)
+)
+
+
 
 class User(db.Model, UserMixin):
     uid = db.Column(db.Integer, primary_key=True)
@@ -75,6 +88,27 @@ class Post(db.Model):
     media = db.Column(db.String(20), nullable=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
+
+    liked = db.relationship("User", secondary=likes)
+    commented = db.relationship("User", secondary=comments)
+
+    def get_likes_count(self):
+        return len(self.liked)
+
+
+    def user_liked(self, user):
+        return user in self.liked
+
+
+    def like_post(self, user):
+        if user not in self.liked:
+            self.liked.append(user)
+        else:
+            self.unlike_post(user)
+
+    def unlike_post(self, user):
+        self.liked.remove(user)
+
 
     def __repr__(self):
         return f"Post('{self.content}', '{self.date_posted}')"

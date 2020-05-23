@@ -83,9 +83,9 @@ def get_user(username):
 
 
 
-@app.route("/post/")
-def get_post():
-    post_id = request.args.get('id')
+@app.route("/post/<int:post_id>")
+def get_post(post_id):
+    # post_id = request.args.get('id')
     post = Post.query.get_or_404(int(post_id))
 
     return render_template("post.html", post=post) 
@@ -127,7 +127,7 @@ def account():
 
 
 
-@app.route("/follow", methods=['GET', 'POST'])
+@app.route("/follow", methods=['POST'])
 @login_required
 def follow_user():
     # user_id = int(request.args.get('id'))
@@ -142,7 +142,7 @@ def follow_user():
 
 
 
-@app.route("/unfollow", methods=['GET', 'POST'])
+@app.route("/unfollow", methods=['POST'])
 @login_required
 def unfollow_user():
     # user_id = int(request.args.get('id'))
@@ -154,3 +154,12 @@ def unfollow_user():
 
     return jsonify(result=username + " unfollowed")
     # return redirect(url_for('get_user', username=user.username))
+
+
+@app.route("/post/<int:post_id>/like", methods=['GET', 'POST'])
+@login_required
+def post_likes(post_id):
+    post = Post.query.get(int(post_id))
+    post.like_post(current_user)
+    db.session.commit()
+    return jsonify(result=post.get_likes_count())

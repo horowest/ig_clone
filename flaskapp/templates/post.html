@@ -1,9 +1,42 @@
 {% extends "layout.html" %}
 {% block content %}
+
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#like").click(function() {
+                $.get($SCRIPT_ROOT + "{{ url_for('post_likes', post_id=post.pid) }}", 
+                function(data, success) {
+                    // alert(data.result + " \nstatus: " + success);
+                    $("#like_count").text(data.result);
+                    st = $("#like").text();
+                    if(st == "like")
+                        $("#like").text("liked");
+                    else
+                        $("#like").text("like");
+                });
+            });
+        });
+    </script>
+
     <div class="content-section">
         <article>
             <div>
+                {% if post.media %}
+                    <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
+                {% endif %}
                 <p>{{ post.content }}</p>
+                <div>
+                    {% if post.user_liked(current_user) %}
+                        <a href="#" id="like">liked</a>
+                    {% else %}
+                        <a href="#" id="like">like</a>
+                    {% endif %}
+                    <span id="like_count">{{ post.get_likes_count() }}</span>
+                </div>
                 <div>
                     <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
                     <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
