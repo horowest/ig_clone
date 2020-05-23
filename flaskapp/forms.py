@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileField, FileAllowed
 from wtforms.fields import StringField, PasswordField, SubmitField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from flaskapp.models import User
+from flask_login import current_user
 
 
 
@@ -46,4 +48,26 @@ class PostForm(FlaskForm):
     content = TextAreaField(label='Content', validators=[
         DataRequired()
     ])
+    media = FileField(label='Upload pic', validators=[
+        FileAllowed(('jpg', 'png'))
+    ])
     submit = SubmitField(label='Post')
+
+
+
+class AccountUpdateForm(FlaskForm):
+    username = StringField(label='Username', validators=[
+        DataRequired(),
+        Length(min=2, max=20)
+    ])
+    picture = FileField(label='Upload profile pic', validators=[
+        FileAllowed(('jpg', 'png'))
+    ])
+    submit = SubmitField(label='Update')
+
+
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            user = User.query.filter_by(username=username.data).first()
+            if user:
+                raise ValidationError("Username is already take.")

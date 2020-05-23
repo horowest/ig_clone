@@ -4,6 +4,9 @@
         {% for post in posts %}
             <article>
                 <div>
+                    {% if post.media %}
+                        <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
+                    {% endif %}
                     <p>{{ post.content }}</p>
                     <div>
                         <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>

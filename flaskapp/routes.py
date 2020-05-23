@@ -3,13 +3,13 @@ from flask import render_template, redirect, url_for, flash, request
 from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm
 from flaskapp.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
-from flaskapp.utils import save_picture
+from flaskapp.utils import save_picture, save_media
 
 
 
 @app.route("/")
 def home():
-    posts = Post.query.order_by(Post.date_posted.desc()).all()
+    posts = current_user.get_followed_posts()
 
     return render_template("home.html", title="FlaskApp", posts=posts)
 
@@ -64,7 +64,8 @@ def logout():
 def new_post():
     form = PostForm()
     if form.validate_on_submit():
-        post = Post(content=form.content.data, author=current_user)
+        media = save_media(form.media.data, 'media')
+        post = Post(content=form.content.data, media=media, author=current_user)
         db.session.add(post)
         db.session.commit()
         flash("Posted successfully", 'success')
@@ -75,10 +76,10 @@ def new_post():
 
 @app.route("/user/<string:username>")
 def get_user(username):
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(username=username).first_or_404()
     posts = user.posts
     posts.reverse()
-    return render_template("user.html", title=user.username, posts=posts)
+    return render_template("user.html", title=user.username, posts=posts, user=user)
 
 
 
@@ -123,3 +124,27 @@ def account():
         form.username.data = current_user.username
         
     return render_template("account.html", title=current_user.username, form = form, image_url=current_user.image_file)
+
+
+
+@app.route("/user/<string:username>/follow", methods=['POST'])
+@login_required
+def follow_user(username):
+    # user_id = int(request.args.get('id'))
+    user = User.query.filter_by(username=username).first()
+    current_user.follow(user)
+    db.session.commit()
+    flash(f"You are now following {username}", 'success')
+    return redirect(url_for('get_user', username=user.username))
+
+
+
+@app.route("/user/<string:username>/unfollow", methods=['POST'])
+@login_required
+def unfollow_user(username):
+    # user_id = int(request.args.get('id'))
+    user = User.query.filter_by(username=username).first()
+    current_user.unfollow(user)
+    db.session.commit()
+    flash(f"{username} unfollowed", 'success')
+    return redirect(url_for('get_user', username=user.username))

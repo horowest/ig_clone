@@ -1,15 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
     <div class="content-section">
+        <h1>{{ user.username }}</h1>
+        <small>
+            {% if current_user.is_following(user) %}
+                <form method="POST" action="{{ url_for('unfollow_user', username=user.username) }}">
+                    <input type="submit" value="unfollow">
+                </form>
+            {% elif user != current_user %}
+                <form method="POST" action="{{ url_for('follow_user', username=user.username) }}">
+                    <input type="submit" value="follow">
+                </form>
+            {% endif %}
+        </small>
         {% for post in posts %}
             <article>
                 <div>
+                    {% if post.media %}
+                        <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
+                    {% endif %}
                     <p>{{ post.content }}</p>
                     <div>
                         <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
                         <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
                     </div>
                 </div>
+                {% if post.author == current_user %}
+                    <small><a href="{{ url_for('delete_post', post_id=post.pid) }}">delete</a></small>
+                {% endif %}
             </article>
         {% endfor %}
     </div>
