@@ -20,16 +20,9 @@ followers = db.Table('followers',
 )
 
 
-likes = db.Table('like',
+likes = db.Table('likes',
     db.Column('post_id', db.Integer, db.ForeignKey('post.pid')),
     db.Column('user_id', db.Integer, db.ForeignKey('user.uid'))
-)
-
-
-comments = db.Table('comments',
-    db.Column('post_id', db.Integer, db.ForeignKey('post.pid')),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.uid')),
-    db.Column('comment', db.String(140), nullable=False)
 )
 
 
@@ -40,7 +33,8 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(32), nullable=False)
     image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     
-    posts = db.relationship('Post', backref='author', lazy=True) 
+    posts = db.relationship('Post', backref='author', lazy=True)
+    comments = db.relationship('Comment', backref='author', lazy=True)  
 
     follows = db.relationship(
         'User', secondary=followers,
@@ -90,7 +84,8 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
 
     liked = db.relationship("User", secondary=likes)
-    commented = db.relationship("User", secondary=comments)
+    comments = db.relationship('Comment', backref='post', lazy=True)
+
 
     def get_likes_count(self):
         return len(self.liked)
@@ -112,3 +107,14 @@ class Post(db.Model):
 
     def __repr__(self):
         return f"Post('{self.content}', '{self.date_posted}')"
+
+
+class Comment(db.Model):
+    cid = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.Text, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.pid'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"Comment({self.post_id}, {self.user_id}, '{self.content}', '{self.date_posted}')"

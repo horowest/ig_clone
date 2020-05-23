@@ -1,7 +1,7 @@
 from flaskapp import app, db
 from flask import render_template, redirect, url_for, flash, request, jsonify
-from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm
-from flaskapp.models import User, Post
+from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm, CommentPostForm
+from flaskapp.models import User, Post, Comment
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskapp.utils import save_picture, save_media
 
@@ -83,12 +83,13 @@ def get_user(username):
 
 
 
-@app.route("/post/<int:post_id>")
+@app.route("/post/id/<int:post_id>")
 def get_post(post_id):
-    # post_id = request.args.get('id')
+    # post_id = request.args.get('post_id')
     post = Post.query.get_or_404(int(post_id))
 
-    return render_template("post.html", post=post) 
+    form = CommentPostForm()
+    return render_template("post.html", post=post, form=form) 
 
 
 
@@ -123,15 +124,20 @@ def account():
     if request.method == 'GET':
         form.username.data = current_user.username
         
-    return render_template("account.html", title=current_user.username, form = form, image_url=current_user.image_file)
+    return render_template("account.html", title=current_user.username, 
+                            form = form, image_url=current_user.image_file)
 
 
 
-@app.route("/follow", methods=['POST'])
+@app.route("/follow", methods=['GET', 'POST'])
 @login_required
 def follow_user():
     # user_id = int(request.args.get('id'))
-    username = request.form['username']
+    if request.method == 'GET':
+        username = request.args.get('username')
+    else:
+        username = request.form['username']
+    print(username)
     user = User.query.filter_by(username=username).first()
     current_user.follow(user)
     db.session.commit()
@@ -150,6 +156,7 @@ def unfollow_user():
     user = User.query.filter_by(username=username).first()
     current_user.unfollow(user)
     db.session.commit()
+    print(username)
     # flash(f"{username} unfollowed", 'success')
 
     return jsonify(result=username + " unfollowed")
@@ -163,3 +170,17 @@ def post_likes(post_id):
     post.like_post(current_user)
     db.session.commit()
     return jsonify(result=post.get_likes_count())
+
+
+
+@app.route("/comment/<int:post_id>", methods=['POST'])
+@login_required
+def make_comment(post_id):
+    content = request.form['msg']
+    post = Post.query.get(int(post_id))
+    if post:
+        c = Comment(content=content, author=current_user, post_id=post_id)
+        db.session.add(c)
+        db.session.commit()
+        return jsonify(username=current_user.username, 
+                    content=content, date_posted=c.date_posted.strftime('%d-%m-%Y'))

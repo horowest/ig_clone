@@ -19,8 +19,36 @@
                         $("#like").text("like");
                 });
             });
+
+            // post new comment
+            $("#post-comment").click(function() {
+                var msg = $("#make-comment").val();
+                if(msg == '') {
+                    alert("Cannot post empty comment");
+                    return false;
+                }
+                $.post($SCRIPT_ROOT + "{{ url_for('make_comment', post_id=post.pid) }}",
+                {
+                    msg: $("#make-comment").val()
+                },
+                function(data, success) {
+                    //alert(data.content + '\n ' + success);
+                    $("#make-comment").val('');
+
+                    var comment = "<div class='comment'><a href='#'>" + 
+                    data.username + "</a> <span>" + data.content + 
+                    "</span><small>" + data.date_posted + "</small></div>";
+
+                    $(".comments").append(comment);
+                });
+            });
         });
     </script>
+
+    <script type="text/javascript">
+
+    </script>
+
 
     <div class="content-section">
         <article>
@@ -29,6 +57,10 @@
                     <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
                 {% endif %}
                 <p>{{ post.content }}</p>
+                <div class="post-info">
+                    <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+                    <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
+                </div>
                 <div>
                     {% if post.user_liked(current_user) %}
                         <a href="#" id="like">liked</a>
@@ -37,9 +69,29 @@
                     {% endif %}
                     <span id="like_count">{{ post.get_likes_count() }}</span>
                 </div>
+                <div class="comments">
+                    {% if post.comments %}
+                        {% for comment in post.comments %}
+                        <div class="comment">
+                            <a href="#">{{ comment.author.username }}</a> <span>{{ comment.content }}</span>
+                            <small>{{ comment.date_posted.strftime('%d-%m-%Y') }}</small>
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="form-group" >
+                    {{ form.content.label() }}
+                    <div>
+                        {{ form.content(id="make-comment") }}
+                        {% if form.content.errors %}
+                            {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
                 <div>
-                    <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
-                    <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
+                    {{ form.submit(class="btn btn-info", id="post-comment") }}
                 </div>
             </div>
             {% if post.author == current_user %}

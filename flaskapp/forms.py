@@ -55,6 +55,12 @@ class PostForm(FlaskForm):
 
 
 
+class CommentPostForm(FlaskForm):
+    content = TextAreaField(label='Comment')
+    submit = SubmitField(label='Post')
+
+
+
 class AccountUpdateForm(FlaskForm):
     username = StringField(label='Username', validators=[
         DataRequired(),

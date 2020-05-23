@@ -10,20 +10,22 @@
         $("#flw").click(function() {
             var t = $("#flw").text();
             if(t == "follow") {
-                $.post($SCRIPT_ROOT + "/follow", 
+                $.post($SCRIPT_ROOT + "{{ url_for('follow_user') }}", 
                 { 
-                    username: 'test'
-                }, function(data, success) {
-                    alert(data.result + " status: " + success);
+                    username: $("#user").text() 
+                }, 
+                function(data, success) {
+                    //alert(data.result + " status: " + success);
                     $("#flw").text('unfollow');
                 });
             }
             if(t == "unfollow") {
-                $.post($SCRIPT_ROOT + "/unfollow", 
+                $.post($SCRIPT_ROOT + "{{ url_for('unfollow_user') }}", 
                 { 
-                    username: 'test'
-                }, function(data, success) {
-                    alert(data.result + " status: " + success);
+                    username: $("#user").text() 
+                }, 
+                function(data, success) {
+                    //alert(data.result + " status: " + success);
                     $("#flw").text('follow');
                 });
             }
