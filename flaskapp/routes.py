@@ -1,5 +1,5 @@
 from flaskapp import app, db
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, jsonify
 from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm
 from flaskapp.models import User, Post
 from flask_login import login_user, current_user, logout_user, login_required
@@ -127,24 +127,30 @@ def account():
 
 
 
-@app.route("/user/<string:username>/follow", methods=['POST'])
+@app.route("/follow", methods=['GET', 'POST'])
 @login_required
-def follow_user(username):
+def follow_user():
     # user_id = int(request.args.get('id'))
+    username = request.form['username']
     user = User.query.filter_by(username=username).first()
     current_user.follow(user)
     db.session.commit()
-    flash(f"You are now following {username}", 'success')
-    return redirect(url_for('get_user', username=user.username))
+    # flash(f"You are now following {username}", 'success')
+
+    return jsonify(result=username + " followed")
+    # return redirect(url_for('get_user', username=user.username))
 
 
 
-@app.route("/user/<string:username>/unfollow", methods=['POST'])
+@app.route("/unfollow", methods=['GET', 'POST'])
 @login_required
-def unfollow_user(username):
+def unfollow_user():
     # user_id = int(request.args.get('id'))
+    username = request.form['username']
     user = User.query.filter_by(username=username).first()
     current_user.unfollow(user)
     db.session.commit()
-    flash(f"{username} unfollowed", 'success')
-    return redirect(url_for('get_user', username=user.username))
+    # flash(f"{username} unfollowed", 'success')
+
+    return jsonify(result=username + " unfollowed")
+    # return redirect(url_for('get_user', username=user.username))

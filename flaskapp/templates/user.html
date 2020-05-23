@@ -1,16 +1,46 @@
 {% extends "layout.html" %}
 {% block content %}
+
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+
+    <script type=text/javascript>
+        $(document).ready(function() {
+        $("#flw").click(function() {
+            var t = $("#flw").text();
+            if(t == "follow") {
+                $.post($SCRIPT_ROOT + "/follow", 
+                { 
+                    username: 'test'
+                }, function(data, success) {
+                    alert(data.result + " status: " + success);
+                    $("#flw").text('unfollow');
+                });
+            }
+            if(t == "unfollow") {
+                $.post($SCRIPT_ROOT + "/unfollow", 
+                { 
+                    username: 'test'
+                }, function(data, success) {
+                    alert(data.result + " status: " + success);
+                    $("#flw").text('follow');
+                });
+            }
+        }); 
+        }); 
+    </script>
+
     <div class="content-section">
-        <h1>{{ user.username }}</h1>
+        <h1 id="user">{{ user.username }}</h1>
         <small>
             {% if current_user.is_following(user) %}
-                <form method="POST" action="{{ url_for('unfollow_user', username=user.username) }}">
+                <!--<form method="POST" action="{{ url_for('unfollow_user', username=user.username) }}">
                     <input type="submit" value="unfollow">
-                </form>
+                </form>-->
+                <button id="flw">unfollow</button>
             {% elif user != current_user %}
-                <form method="POST" action="{{ url_for('follow_user', username=user.username) }}">
-                    <input type="submit" value="follow">
-                </form>
+                <button id="flw">follow</button>
             {% endif %}
         </small>
         {% for post in posts %}
