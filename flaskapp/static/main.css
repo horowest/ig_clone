@@ -1,5 +1,42 @@
-.post-account-img {
-    border-radius: 100%;
-    height: 50px;
-    width: 50px;
+body {
+    background: #fafafa;
+    color: #333333;
+    margin-top: 5rem;
+}
+
+.article {
+    width: 40rem;
+    margin-bottom: 80px;
+}
+
+.post-media {
+    /* padding-left: 20px;
+    padding-right: 20px; */
+}
+
+.card-header {
+    background-color: #ffffff;
+}
+
+.post-meta-data {
+    margin-top: -10px;
+    margin-bottom: 5px;
+}
+
+.comment{
+    display: inline-block;
+    word-wrap: break;
+    font-size: 15px;
+}
+
+
+.user-link {
+    color:#222222;
+    font-weight: bold;
+}
+
+.account-img {
+    height: 30px;
+    width: 30px;
+    margin-right: 5px;
 }

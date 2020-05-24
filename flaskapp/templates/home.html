@@ -1,23 +1,33 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div class="content-section">
-        {% for post in posts %}
-            <article>
-                <div>
-                    {% if post.media %}
-                        <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
+    {% for post in posts %}
+        <div class="card article">
+            <div class="card-header">
+                <img  class="account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+                <a class="text-secondary user-link" href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+            </div>
+    
+            {% if post.media %}
+                <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media" alt="">
+            {% endif %}
+            <div class="card-body">
+                <p class="card-text post-meta-data">
+                    {% if post.user_liked(current_user) %}
+                        <a href="#" id="like">liked</a>
+                    {% else %}
+                        <a href="#" id="like">like</a>
                     {% endif %}
-                    <p>{{ post.content }}</p>
-                    <div>
-                        <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
-                        <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
-                    </div>
-                </div>
-                <small><a href="{{ url_for('get_post', post_id=post.pid) }}">view</a></small>
-                {% if post.author == current_user %}
-                    <small><a href="{{ url_for('delete_post', post_id=post.pid) }}">delete</a></small>
-                {% endif %}
-            </article>
-        {% endfor %}
-    </div>
+                    <span id="like_count">{{ post.get_likes_count() }}</span>
+    
+                    
+                    <small class="float-right"><a class="text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">view</a></small>
+                    
+                </p>
+                <p class="card-text"> 
+                    <a class="text-secondary user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+                    {{ post.content }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock content %}

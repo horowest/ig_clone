@@ -22,22 +22,24 @@
 
             // post new comment
             $("#post-comment").click(function() {
-                var msg = $("#make-comment").val();
+                var msg = $("#make-comment").text();
+                msg = $.trim(msg);
+                // aler(msg);
+                // return;
                 if(msg == '') {
                     alert("Cannot post empty comment");
                     return false;
                 }
                 $.post($SCRIPT_ROOT + "{{ url_for('make_comment', post_id=post.pid) }}",
                 {
-                    msg: $("#make-comment").val()
+                    msg: msg
                 },
                 function(data, success) {
                     //alert(data.content + '\n ' + success);
-                    $("#make-comment").val('');
+                    $("#make-comment").text('');
 
-                    var comment = "<div class='comment'><a href='#'>" + 
-                    data.username + "</a> <span>" + data.content + 
-                    "</span><small>" + data.date_posted + "</small></div>";
+                    var comment = "<span class='comment'><a class='text-secondary user-link' href='#'>" + 
+                    data.username + "</a> " + data.content + "</span><br>";
 
                     $(".comments").append(comment);
                 });
@@ -48,55 +50,59 @@
     <script type="text/javascript">
 
     </script>
+    <div class="card article">
+        <div class="card-header">
+            <img  class="account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+            <a class="text-secondary user-link" href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+        </div>
 
-
-    <div class="content-section">
-        <article>
-            <div>
-                {% if post.media %}
-                    <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
+        {% if post.media %}
+            <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media" alt="">
+        {% endif %}
+        <div class="card-body">
+            <p class="card-text post-meta-data">
+                {% if post.user_liked(current_user) %}
+                    <a href="#" id="like">liked</a>
+                {% else %}
+                    <a href="#" id="like">like</a>
                 {% endif %}
-                <p>{{ post.content }}</p>
-                <div class="post-info">
-                    <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
-                    <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
-                </div>
-                <div>
-                    {% if post.user_liked(current_user) %}
-                        <a href="#" id="like">liked</a>
-                    {% else %}
-                        <a href="#" id="like">like</a>
-                    {% endif %}
-                    <span id="like_count">{{ post.get_likes_count() }}</span>
-                </div>
-                <div class="comments">
-                    {% if post.comments %}
-                        {% for comment in post.comments %}
-                        <div class="comment">
-                            <a href="#">{{ comment.author.username }}</a> <span>{{ comment.content }}</span>
-                            <small>{{ comment.date_posted.strftime('%d-%m-%Y') }}</small>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-                <div class="form-group" >
-                    {{ form.content.label() }}
-                    <div>
-                        {{ form.content(id="make-comment") }}
-                        {% if form.content.errors %}
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-                <div>
-                    {{ form.submit(class="btn btn-info", id="post-comment") }}
-                </div>
+                <span id="like_count">{{ post.get_likes_count() }}</span>
+
+                {% if post.author == current_user %}
+                    <small class="float-right"><a class="text-danger" href="{{ url_for('delete_post', post_id=post.pid) }}">delete</a></small>
+                {% endif %}
+            </p>
+            <p class="card-text"> 
+                <a class="text-secondary user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+                {{ post.content }}
+            </p>
+            <hr>
+            <div class="comments">
+                {% if post.comments %}
+                    {% for comment in post.comments %}
+                        <span class="comment">
+                            <a class="text-secondary user-link" href="#">{{ comment.author.username }}</a>
+                                {{ comment.content }}
+                        </span>
+                        <br>
+                    {% endfor %}
+                {% endif %}
             </div>
-            {% if post.author == current_user %}
-                    <small><a href="{{ url_for('delete_post', post_id=post.pid) }}">delete</a></small>
-            {% endif %}
-        </article>
+        </div>
+        <ul class="list-group list-group-flush">
+            <!-- {% if post.comments %}
+                {% for comment in post.comments %}
+                <li class="list-group-item comment">
+                    <a href="#">{{ comment.author.username }}</a>
+                        {{ comment.content }}
+                </li>
+                {% endfor %}
+            {% endif %} -->
+
+            <li class="list-group-item text-muted" id= "make-comment" contentEditable="true">
+                Cras justo odio
+            </li>
+            <button class="btn" id="post-comment">Comment</button>
+        </ul>
     </div>
 {% endblock content %}
