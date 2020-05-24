@@ -8,6 +8,7 @@ from flaskapp.utils import save_picture, save_media
 
 
 @app.route("/")
+@login_required
 def home():
     posts = current_user.get_followed_posts()
 
