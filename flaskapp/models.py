@@ -105,6 +105,15 @@ class Post(db.Model):
         self.liked.remove(user)
 
 
+    def comments_count(self):
+        return len(self.comments)
+
+
+    def get_comments(self, limit=0):
+        if limit > 0:
+            return self.comments[-limit:] 
+
+
     def __repr__(self):
         return f"Post('{self.content}', '{self.date_posted}')"
 

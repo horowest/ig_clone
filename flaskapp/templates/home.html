@@ -1,10 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
+
     {% for post in posts %}
         <div class="card article">
             <div class="card-header">
                 <img  class="account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
-                <a class="text-secondary user-link" href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+                <a class="text-dark user-link" href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
             </div>
     
             {% if post.media %}
@@ -23,11 +24,28 @@
                     <small class="float-right"><a class="text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">view</a></small>
                     
                 </p>
-                <p class="card-text"> 
-                    <a class="text-secondary user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+                <span class="card-text"> 
+                    <a class="text-dark user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
                     {{ post.content }}
-                </p>
+                </span>
+                <div class="comments">
+                    {% if post.comments %}
+                    <a class="text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">View all {{ post.comments_count() }} comments</a>
+                        {% for comment in post.get_comments(limit=2) %}
+                            <span class="comment">
+                                <a class="text-dark user-link" href="{{ url_for('get_user', username=comment.author.username) }}">{{ comment.author.username }}</a>
+                                    {{ comment.content }}
+                            </span>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item text-muted comment-box" id="make-comment" contentEditable="true">
+                    Add a comment..
+                </li>
+                <button class="btn comment-btn" id="post-comment">Comment</button>
+            </ul>
         </div>
     {% endfor %}
 {% endblock content %}

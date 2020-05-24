@@ -8,10 +8,11 @@ from flaskapp.utils import save_picture, save_media
 
 
 @app.route("/")
-@login_required
 def home():
-    posts = current_user.get_followed_posts()
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))
 
+    posts = current_user.get_followed_posts()
     return render_template("home.html", title="FlaskApp", posts=posts)
 
 
@@ -184,4 +185,5 @@ def make_comment(post_id):
         db.session.add(c)
         db.session.commit()
         return jsonify(username=current_user.username, 
+                    user_url=url_for('get_user', username=current_user.username),
                     content=content, date_posted=c.date_posted.strftime('%d-%m-%Y'))

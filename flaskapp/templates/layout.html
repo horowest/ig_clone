@@ -7,8 +7,9 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
 
-    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
 
+    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
+ 
     {% if title %}
         <title>{{ title }}</title>
     {% else %}
@@ -44,7 +45,7 @@
     </header>
     <main role="main" class="container">
         <div class="row justify-content-md-center">
-            <div class="col-md-8">
+            <div class="" style="width: 40rem;">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
@@ -59,7 +60,7 @@
                 {% endwith %}
                 {% block content %} {% endblock content %}
             </div>
-            <div class="col-md-3">
+            <div class="col-md-3 sidebar">
                 <div class="content-section">
                 <h3>Our Sidebar</h3>
                 <p class='text-muted'>You can put any information here you'd like.
@@ -76,8 +77,5 @@
     </main>
 </body>
 
-
-
-<script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
 <script type=text/javascript src="{{ url_for('static', filename='bootstrap.js') }}"></script>
 </html>

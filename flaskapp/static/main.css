@@ -1,12 +1,17 @@
 body {
     background: #fafafa;
     color: #333333;
-    margin-top: 5rem;
+    margin-top: 6rem;
+    font-size: 14px;
+}
+
+.navbar {
+    height: 3rem;
 }
 
 .article {
     width: 40rem;
-    margin-bottom: 80px;
+    margin-bottom: 5rem;
 }
 
 .post-media {
@@ -19,18 +24,32 @@ body {
 }
 
 .post-meta-data {
-    margin-top: -10px;
+    margin-top: -15px;
     margin-bottom: 5px;
+    font-size: 17px;
+}
+
+.up-info {
+    color:#ec4a64;
+}
+
+#like_counter {
+    margin-top: 2px;
+    font-weight: bold;
+    font-size: 15px;
+} 
+
+.comments {
 }
 
 .comment{
-    display: inline-block;
+    display: block;
     word-wrap: break;
-    font-size: 15px;
+    font-size: 14px;
 }
 
 
-.user-link {
+a.user-link {
     color:#222222;
     font-weight: bold;
 }
@@ -39,4 +58,13 @@ body {
     height: 30px;
     width: 30px;
     margin-right: 5px;
+}
+
+#make-comment {
+    font-size: 15px;
+}
+
+.fas {
+    font-size: 25px;
+    color:#ec4a64;
 }
