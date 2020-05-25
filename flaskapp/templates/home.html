@@ -1,6 +1,26 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
 
+.modal-footer {
+    justify-content: space-between;
+    padding: 0rem 0.5rem 0 0.5rem;
+}
+
+.list-group-flush {
+    width: 85%;
+}
+
+.caption-box {
+    max-width: inherit;
+    word-wrap: break-word;
+    resize: none;
+    border: none;
+}
+
+textarea { overflow: hidden; } 
+
+</style>
     {% for post in posts %}
         <div class="card article">
             <div class="card-header">
@@ -40,12 +60,35 @@
                     {% endif %}
                 </div>
             </div>
-            <ul class="list-group list-group-flush">
+            <!-- <ul class="list-group list-group-flush">
                 <li class="list-group-item text-muted comment-box" id="make-comment" contentEditable="true">
                     Add a comment..
                 </li>
                 <button class="btn comment-btn" id="post-comment">Comment</button>
+            </ul> -->
+            <div class="modal-footer">
+                <ul class="list-group list-group-flush">
+                <!-- <textarea class="text-muted caption-box" id="caption" placeholder="Add a comment.."></textarea> -->
+                <li class="list-group-item text-muted" id="make-comment" contentEditable="true">Add a comment..</li>
             </ul>
+          <button type="button" class="btn post-btn">Post</button>
+          </div>
+
         </div>
     {% endfor %}
 {% endblock content %}
+{% block sidebar %}
+<div class="col-md-3 sidebar">
+    <div class="content-section">
+    <h3>Our Sidebar</h3>
+    <p class='text-muted'>You can put any information here you'd like.
+        <ul class="list-group">
+        <li class="list-group-item list-group-item-light">Latest Posts</li>
+        <li class="list-group-item list-group-item-light">Announcements</li>
+        <li class="list-group-item list-group-item-light">Calendars</li>
+        <li class="list-group-item list-group-item-light">etc</li>
+        </ul>
+    </p>
+    </div>
+</div>
+{% endblock sidebar %} 

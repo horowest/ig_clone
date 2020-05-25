@@ -18,7 +18,7 @@
 </head>
 <body>
     <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+        <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
           <div class="container">
             <a class="navbar-brand mr-4" href="/">FlaskApp</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,19 +60,7 @@
                 {% endwith %}
                 {% block content %} {% endblock content %}
             </div>
-            <div class="col-md-3 sidebar">
-                <div class="content-section">
-                <h3>Our Sidebar</h3>
-                <p class='text-muted'>You can put any information here you'd like.
-                    <ul class="list-group">
-                    <li class="list-group-item list-group-item-light">Latest Posts</li>
-                    <li class="list-group-item list-group-item-light">Announcements</li>
-                    <li class="list-group-item list-group-item-light">Calendars</li>
-                    <li class="list-group-item list-group-item-light">etc</li>
-                    </ul>
-                </p>
-                </div>
-            </div>
+                {% block sidebar %} {% endblock sidebar %}
         </div>
     </main>
 </body>

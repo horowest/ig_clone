@@ -1,6 +1,106 @@
 {% extends "layout.html" %}
 {% block content %}
-    <div>
+<style>
+#upload {
+    opacity: 0;
+}
+
+#upload-label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+}
+
+.modal-dialog {
+    width: 40rem;
+    margin: auto;
+}
+
+.modal-body {
+    padding: 0;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.modal-footer {
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.list-group-flush {
+    width: 85%;
+}
+
+.caption-box {
+    max-width: inherit;
+    word-wrap: break-word;
+    resize: none;
+    border: none;
+}
+
+textarea { overflow: hidden; }
+
+</style>
+
+<form method="POST" action="" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
+    <div class="card">
+        <div class="card-body">
+            <!-- Upload image input-->
+            <div class="input-group px-2 py-2 bg-light border-0 rounded">
+                {{ form.media(id='upload', onchange='readURL(this);', class='form-control border-0') }}
+                <!-- <input id="upload" type="file" onchange="readURL(this);" class="form-control border-0"> -->
+                {{ form.media.label(id='upload-label', for='upload', class='font-weight-light text-muted') }}
+                <!-- <label id="upload-label" for="upload" class="font-weight-light text-muted">Upload a pic</label> -->
+                <div class="input-group-append">
+                    <label for="upload" class="btn btn-light m-0 px-4"> 
+                        <i class="fa fa-cloud-upload mr-2 text-muted"></i>
+                        <small class="text-uppercase font-weight-bold text-muted">Choose file</small></label>
+                </div>
+            </div>
+        </div>
+        {% if form.media.errors %}
+            <div class="card-footer">
+            {% for error in form.media.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    <div class="modal fade" id="exampleModalCenter" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h6 class="modal-title" id="exampleModalLongTitle">Make a post</h6>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="image-area"><img id="imageResult" src="#" alt="" class="img-fluid shadow-sm mx-auto d-block"></div>
+    
+            </div>
+            <div class="modal-footer">
+                <ul class="list-group list-group-flush">
+                    {{ form.content(class="text-muted caption-box", id="caption", placeholder="Add a caption..") }}
+                    <!-- <textarea class="list-group-item text-muted caption-box" id="caption" placeholder="Add a caption.."></textarea> -->
+                    {% if form.content.errors %}
+                            {% for error in form.content.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                    {% endif %}
+                </ul>
+                {{ form.submit(class="btn post-btn") }}
+              <!-- <button type="button" class="btn btn-dark post-btn">Post</button> -->
+            </div>
+          </div>
+        </div>
+      </div>
+</form>
+    <!-- <div>
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset>
@@ -32,5 +132,41 @@
                 {{ form.submit(class="btn btn-info") }}
             </div>
         </form>
-    </div>
+    </div> -->
+
+    <script type="text/javascript">
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#imageResult')
+                        .attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+                
+                $('#exampleModalCenter').modal('show');
+            }
+        }
+
+        $(function () {
+            $('#upload').on('change', function () {
+                readURL(input);
+            });
+        });
+
+        /*  ==========================================
+            SHOW UPLOADED IMAGE NAME
+        * ========================================== */
+        var input = document.getElementById( 'upload' );
+        var infoArea = document.getElementById( 'upload-label' );
+
+        input.addEventListener('change', showFileName);
+        function showFileName( event ) {
+            var input = event.srcElement;
+            var fileName = input.files[0].name;
+            infoArea.textContent = 'File name: ' + fileName;
+        }
+
+    </script>
 {% endblock %}
