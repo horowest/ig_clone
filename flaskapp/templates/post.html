@@ -62,7 +62,7 @@
         </div>
 
         {% if post.media %}
-            <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media" alt="">
+            <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
         {% endif %}
         <div class="card-body">
             <div class="card-text post-meta-data">

@@ -9,58 +9,100 @@
         $(document).ready(function() {
         $("#flw").click(function() {
             var t = $("#flw").text();
-            if(t == "follow") {
+            if(t == "Follow") {
                 $.post($SCRIPT_ROOT + "{{ url_for('follow_user') }}", 
                 { 
                     username: $("#user").text() 
                 }, 
                 function(data, success) {
                     //alert(data.result + " status: " + success);
-                    $("#flw").text('unfollow');
+                    $("#flw").text('Following');
+                    $("#flw").removeClass('btn-primary');
+                    $("#flw").addClass('btn-secondary');
                 });
             }
-            if(t == "unfollow") {
+            else if(t == "Following") {
                 $.post($SCRIPT_ROOT + "{{ url_for('unfollow_user') }}", 
                 { 
                     username: $("#user").text() 
                 }, 
                 function(data, success) {
                     //alert(data.result + " status: " + success);
-                    $("#flw").text('follow');
+                    $("#flw").text('Follow');
+                    $("#flw").removeClass('btn-secondary');
+                    $("#flw").addClass('btn-primary');
                 });
             }
         }); 
         }); 
     </script>
 
-    <div class="content-section">
-        <h1 id="user">{{ user.username }}</h1>
-        <small>
-            {% if current_user.is_following(user) %}
-                <!--<form method="POST" action="{{ url_for('unfollow_user', username=user.username) }}">
-                    <input type="submit" value="unfollow">
-                </form>-->
-                <button id="flw">unfollow</button>
-            {% elif user != current_user %}
-                <button id="flw">follow</button>
-            {% endif %}
-        </small>
-        {% for post in posts %}
-            <article>
-                <div>
-                    {% if post.media %}
-                        <img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
-                    {% endif %}
-                    <p>{{ post.content }}</p>
-                    <div>
-                        <a href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
-                        <small class="text-muted">{{ post.date_posted.strftime('%d-%m-%Y') }}</small> 
-                    </div>
+    <style>
+        #flw {
+            margin-top: 1.9rem;
+        }
+
+        .info {
+            padding: 0.2rem 1rem 2rem 0rem;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .img-wrapper
+        {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .post-img {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
+
+    <div class="col-md-12">
+        <div class="row user info">
+            <div class="col-md-3 align-items-center">
+                <img  class="pfp-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}">
+            </div>
+            <div class="row">
+                <div class="m-4">
+                    <h1 id="user">{{ user.username }}</h1>
+
+                    <ul class="list-group list-group-horizontal bg-light">
+                        <li class="info list-group-item border-0 bg-light"><a class="text-dark" href="#posts">{{ user.posts.__len__() }} Posts</a></li>
+                        <li class="info list-group-item border-0 bg-light"><a class="text-dark" href="">{{ user.follows.count() }} Follower</a></li>
+                        <li class="info list-group-item border-0 bg-light"><a class="text-dark" href="">{{ user.follows.count() }} Following</a></li>
+                    </ul>
                 </div>
-                {% if post.author == current_user %}
-                    <small><a href="{{ url_for('delete_post', post_id=post.pid) }}">delete</a></small>
+                <div class="">
+                    <small class="">
+                        {% if current_user.is_following(user) %}
+                            <!--<form method="POST" action="{{ url_for('unfollow_user', username=user.username) }}">
+                                <input type="submit" value="unfollow">
+                            </form>-->
+                            <button class="btn btn-secondary" id="flw">Following</button>
+                        {% elif user != current_user %}
+                            <button class="btn btn-primary" id="flw">Follow</button>
+                        {% endif %}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+    <div class="row row-cols-3 mb-4" id="posts">
+        {% for post in posts %}
+            <div class="col p-2 img-wrapper rounded">
+                {% if post.media %}
+                    <a href="{{ url_for('get_post', post_id=post.pid) }}"><img class="post-img" src="{{ url_for('static', filename='media/' + post.media) }}">
+                        </a>
                 {% endif %}
-            </article>
+            </div>
         {% endfor %}
     </div>
 {% endblock content %}

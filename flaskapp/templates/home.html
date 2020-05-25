@@ -29,7 +29,7 @@ textarea { overflow: hidden; }
             </div>
     
             {% if post.media %}
-                <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media" alt="">
+                <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
             {% endif %}
             <div class="card-body">
                 <p class="card-text post-meta-data">
@@ -45,12 +45,16 @@ textarea { overflow: hidden; }
                     
                 </p>
                 <span class="card-text"> 
-                    <a class="text-dark user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
-                    {{ post.content }}
+                    {% if post.content %}
+                        <a class="text-dark user-link " href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
+                        {{ post.content }}
+                    {% endif %}
                 </span>
                 <div class="comments">
                     {% if post.comments %}
-                    <a class="text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">View all {{ post.comments_count() }} comments</a>
+                        {% if post.comments_count() > 2 %}
+                            <a class="text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">View all {{ post.comments_count() }} comments</a>
+                        {% endif %}
                         {% for comment in post.get_comments(limit=2) %}
                             <span class="comment">
                                 <a class="text-dark user-link" href="{{ url_for('get_user', username=comment.author.username) }}">{{ comment.author.username }}</a>

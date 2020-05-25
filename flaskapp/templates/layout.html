@@ -16,7 +16,7 @@
         <title>FlaskApp</title>
     {% endif %}
 </head>
-<body>
+<body class=" bg-light">
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
           <div class="container">
@@ -45,7 +45,7 @@
     </header>
     <main role="main" class="container">
         <div class="row justify-content-md-center">
-            <div class="" style="width: 40rem;">
+            <div class="col-md-8" style="">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}

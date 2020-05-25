@@ -43,6 +43,10 @@ class User(db.Model, UserMixin):
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
 
+
+    def post_count(self):
+        return len(self.posts)
+
     def get_id(self):
         return self.uid
 
