@@ -4,34 +4,38 @@
         <form method="POST" action="" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset>
-                <legend>Update account info</legend>
-                <img  class="account-img" src="{{ url_for('static', filename='profile_pics/' + image_url) }}">
-                <div class="form-group" >
-                    {{ form.username.label() }}
-                    {{ form.username() }}
+                <legend>Update Account Info</legend>
+                <div class="float-left col-md-1">
+                    <img  class="rounded" src="{{ url_for('static', filename='profile_pics/' + image_url) }}">
+                </div>
+                <div class="float-right">
+                    <div class="form-group" >
+                        {{ form.username.label() }}
+                        {{ form.username(class="form-control", placeholder="Username") }}
+                        <div>
+                            {% if form.username.errors %}
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form.picture.label() }}
+                        {{ form.picture(class="form-control-file") }}
+                        <div>
+                            {% if form.picture.errors %}
+                                {% for error in form.picture.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
                     <div>
-                        {% if form.username.errors %}
-                            {% for error in form.username.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
+                        {{ form.submit(class="btn btn-primary") }}
                     </div>
                 </div>
-                <div class="form-group">
-                    {{ form.picture.label() }}
-                    {{ form.picture() }}
-                    <div>
-                        {% if form.picture.errors %}
-                            {% for error in form.picture.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            </fieldset>
-            <div>
-                {{ form.submit(class="btn btn-info") }}
-            </div>
+            </fieldset
         </form>
     </div>
 {% endblock %}
