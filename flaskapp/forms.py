@@ -60,11 +60,11 @@ class CommentPostForm(FlaskForm):
 
 
 class AccountUpdateForm(FlaskForm):
-    username = StringField(label='Username', validators=[
+    username = StringField(label='Change Username', validators=[
         DataRequired(),
         Length(min=2, max=20)
     ])
-    picture = FileField(label='Upload profile pic', validators=[
+    picture = FileField(label='Upload new profile pic', validators=[
         FileAllowed(('jpg', 'png'))
     ])
     submit = SubmitField(label='Update')
