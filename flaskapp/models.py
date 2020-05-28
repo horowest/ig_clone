@@ -1,6 +1,7 @@
 from datetime import datetime
 from flaskapp import db, login_manager
 from flask_login import UserMixin
+import timeago
 
 # User 
 # uid int
@@ -67,6 +68,15 @@ class User(db.Model, UserMixin):
             self.follows.remove(user)
 
 
+    def get_followers(self, user):
+        return User.query.filter(User.follows.any(uid=user.uid)).all()
+
+
+    def get_followers_count(self, user):
+        return len(self.get_followers(user))
+
+
+
     def get_followed_posts(self):
         fw_users = [user.uid for user in self.follows.all()]
         fw_users.append(self.uid)       # to include my own posts
@@ -116,6 +126,11 @@ class Post(db.Model):
     def get_comments(self, limit=0):
         if limit > 0:
             return self.comments[-limit:] 
+
+
+    def get_timeago(self):
+        now = datetime.now()
+        return timeago.format(self.date_posted, now)
 
 
     def __repr__(self):
