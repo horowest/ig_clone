@@ -6,9 +6,10 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css"> -->
 
     <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
+    <!-- <script src='https://kit.fontawesome.com/a076d05399.js'></script> -->
  
     {% if title %}
         <title>{{ title }}</title>
@@ -16,7 +17,7 @@
         <title>FlaskApp</title>
     {% endif %}
 </head>
-<body class=" bg-light">
+<body>
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
           <div class="container">
@@ -44,8 +45,8 @@
         </nav>
     </header>
     <main role="main" class="container">
-        <div class="row justify-content-md-center">
-            <div class="col-md-8" style="">
+        <div class="row justify-content-md-center main-content">
+            <div class="col-md-7" style="">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}
