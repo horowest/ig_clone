@@ -1,107 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-
-
-    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
- 
-    {% if title %}
-        <title>{{ title }}</title>
-    {% else %}
-        <title>FlaskApp</title>
-    {% endif %}
-</head>
-<body>
-    <header class="site-header">
-        <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-          <div class="container">
-            <a class="navbar-brand mr-4" href="/">FlaskApp</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarToggle">
-              <div class="navbar-nav mr-auto">
-              </div>
-              <!-- Navbar Right Side -->
-              <div class="navbar-nav">
-                {% if current_user.is_authenticated %}
-                    <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-                  <a class="nav-item nav-link" href="{{ url_for('new_post') }}">New Post</a>
-                  <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
-                  <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
-                {% else %}
-                  <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                  <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
-                {% endif %}
-              </div>
-            </div>
-          </div>
-        </nav>
-    </header>
-    <main role="main" class="container">
-        <div class="row justify-content-md-center">
-            <div class=""  style="width: 18rem;">
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        {% for category, message in messages %}
-                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                                {{ message }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
+{% extends "layout.html" %}
+{% block content %}
+<div class="login-form">
+    <div class="card" style="width:17rem;">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="card-header">
+                <h5 class="card-titile text-center">Sign In</h5>
+            </div>        
+            <fieldset class="card-body">
+            <div class="form-group">
+                {{ form.username(class="form-control rounded-0", placeholder="Username") }}
+                {% if form.username.errors %}
+                    <small id="emailHelp" class="form-text text-muted">
+                        {% for error in form.username.errors %}
+                            <span>{{ error }}</span>
                         {% endfor %}
-                    {% endif%}
-                {% endwith %}
-                <div class="card">
-                    <form method="POST" action="">
-                        {{ form.hidden_tag() }}
-                        <div class="card-header">
-                            <h5 class="card-titile text-center">Sign In</h5>
-                          </div>        
-                        <fieldset class="card-body">
-                        <div class="form-group">
-                            {{ form.username(class="form-control", placeholder="Username") }}
-                            {% if form.username.errors %}
-                                <small id="emailHelp" class="form-text text-muted">
-                                    {% for error in form.username.errors %}
-                                        <span>{{ error }}</span>
-                                    {% endfor %}
-                                </small>
-                            {% endif %}
-                        </div>
-                        <div class="form-group">
-                            {{ form.password(class="form-control", placeholder="Password") }}
-                            {% if form.password.errors %}
-                                <small id="emailHelp" class="form-text text-muted">
-                                    {% for error in form.password.errors %}
-                                        <span>{{ error }}</span>
-                                    {% endfor %}
-                                </small>
-                            {% endif %}
-                        </div>
-                        <!-- <div class="form-group form-check">
-                            {{ form.remember(class="form-check-input") }} {{ form.remember.label(class="form-check-label") }}
-                        </div> -->
-                        <ul class="list-group list-group-flush">
-                    
-                                {{ form.submit(class="btn btn-primary") }}
-                            <li class="list-group-item text-center ">
-                                <small>Don't have an account? <a href="{{ url_for('register') }}">Register</a></small>
-                            </li>
-                    </form>
-                </div>
+                    </small>
+                {% endif %}
             </div>
-        </div>
-    </main>
-</body>
-
-<script type=text/javascript src="{{ url_for('static', filename='bootstrap.js') }}"></script>
-</html>
-
-
+            <div class="form-group">
+                {{ form.password(class="form-control rounded-0", placeholder="Password") }}
+                {% if form.password.errors %}
+                    <small id="emailHelp" class="form-text text-muted">
+                        {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </small>
+                {% endif %}
+            </div>
+            <div class="form-group form-check">
+                {{ form.remember(class="form-check-input") }} {{ form.remember.label(class="form-check-label mt-1") }}
+                <!--    <small class="float-right">Forgot password?</a></small> -->
+            </div>
+            <ul class="list-group list-group-flush">
+        
+                    {{ form.submit(class="btn btn-primary") }}
+                <li class="list-group-item text-center ">
+                    <small>Don't have an account? <a href="{{ url_for('register') }}">Register</a></small>
+                </li>
+        </form>
+    </div>
+</div>
+{% endblock content %}
