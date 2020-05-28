@@ -74,9 +74,9 @@
                     <h1 id="user">{{ user.username }}</h1>
 
                     <ul class="list-group list-group-horizontal bg-light">
-                        <li class="info list-group-item border-0 bg-light"><a class="text-dark" href="#posts">{{ user.posts.__len__() }} Posts</a></li>
-                        <li class="info list-group-item border-0 bg-light"><a class="text-dark" href="">{{ user.follows.count() }} Follower</a></li>
-                        <li class="info list-group-item border-0 bg-light"><a class="text-dark" href="">{{ user.follows.count() }} Following</a></li>
+                        <li class="info list-group-item border-0 bg-light">{{ user.posts.__len__() }} <a class="text-dark font-weight-normal" href="#posts">Posts</a></li>
+                        <li class="info list-group-item border-0 bg-light">{{ user.get_followers_count(user) }} <a class="text-dark font-weight-normal" href="">Follower</a></li>
+                        <li class="info list-group-item border-0 bg-light">{{ user.follows.count() }} <a class="text-dark font-weight-normal" href="">Following</a></li>
                     </ul>
                 </div>
                 <div class="">
