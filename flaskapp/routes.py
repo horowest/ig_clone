@@ -187,3 +187,16 @@ def make_comment(post_id):
         return jsonify(username=current_user.username, 
                     user_url=url_for('get_user', username=current_user.username),
                     content=content, date_posted=c.date_posted.strftime('%d-%m-%Y'))
+
+
+
+@app.route("/comment/<int:com_id>/delete") 
+@login_required
+def delete_comment(com_id):
+    com = Comment.query.get_or_404(com_id)
+    # print(com, com.author, current_user)
+    if com.author == current_user:
+        db.session.delete(com)
+        db.session.commit()
+        
+    return jsonify(result='')
