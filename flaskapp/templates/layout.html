@@ -6,10 +6,15 @@
 
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 
     <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
-    <!-- <script src='https://kit.fontawesome.com/a076d05399.js'></script> -->
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+
+    <script type=text/javascript>
+      $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
  
     {% if title %}
         <title>{{ title }}</title>
@@ -36,14 +41,21 @@
                   <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      {% if current_user.new_notif() %}<span class="text-danger">* </span>{% endif %}
                       Notifications
                     </a>
                     <div class="dropdown-menu notif" aria-labelledby="navbarDropdown">
-                      {% for notif in current_user.get_notifs() %}
-                        <a class="dropdown-item" href="{{url_for('get_post', post_id=notif.post_id)}}">
-                          <small><span class="font-weight-bold">{{ notif.author }}</span> {{ notif.msg }} your post.</small>
-                        </a>
-                      {% endfor %}
+                      {% if current_user.new_notif() %}
+                        {% for notif in current_user.get_notifs() %}
+                          <a class="dropdown-item" href="{{url_for('get_post', post_id=notif.post_id)}}">
+                            <img  class="account-img rounded" src="{{ url_for('static', filename='media/thumb' + notif.post.media) }}">
+
+                            <small><span class="font-weight-bold">{{ notif.author }}</span> {{ notif.msg }} your post.</small>
+                          </a>
+                        {% endfor %}
+                      {% else %}
+                          <small class="text-muted dropdown-item">No new notifications</small>
+                      {% endif %}
                     </div>
                   </li>
                   <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>

@@ -44,13 +44,20 @@ class User(db.Model, UserMixin):
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
     notifs = db.relationship('Notif', backref='notif_for', lazy=True)  
-
+    
+    notif_count = db.Column(db.Integer, default=0)
+        
 
     def get_notifs(self):
-        if len(self.notifs) > 4:
-            return self.notifs[-4:]
-        else:
-            return self.notifs
+        if self.new_notif():
+            limit = len(self.notifs) - self.notif_count
+            print(len(self.notifs), self.notif_count)
+            self.notif_count = len(self.notifs)
+            db.session.commit()
+            return self.notifs[-limit:]
+
+    def new_notif(self):
+        return len(self.notifs) > self.notif_count
 
 
     def post_count(self):
@@ -107,6 +114,7 @@ class Post(db.Model):
 
     liked = db.relationship("User", secondary=likes)
     comments = db.relationship('Comment', backref='post', lazy=True)
+    notifs = db.relationship('Notif', backref='post', lazy=True)
 
 
     def get_likes_count(self):
@@ -120,8 +128,10 @@ class Post(db.Model):
     def like_post(self, user):
         if user not in self.liked:
             self.liked.append(user)
+            return "like"
         else:
             self.unlike_post(user)
+            return "unlike"
 
     def unlike_post(self, user):
         self.liked.remove(user)
