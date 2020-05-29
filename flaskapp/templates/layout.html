@@ -47,15 +47,20 @@
                     <div class="dropdown-menu notif" aria-labelledby="navbarDropdown">
                       {% if current_user.new_notif() %}
                         {% for notif in current_user.get_notifs() %}
-                          <a class="dropdown-item" href="{{url_for('get_post', post_id=notif.post_id)}}">
+                          <a class="dropdown-item bg-light" href="{{url_for('get_post', post_id=notif.post_id)}}">
                             <img  class="account-img rounded" src="{{ url_for('static', filename='media/thumb' + notif.post.media) }}">
 
                             <small><span class="font-weight-bold">{{ notif.author }}</span> {{ notif.msg }} your post.</small>
                           </a>
                         {% endfor %}
-                      {% else %}
-                          <small class="text-muted dropdown-item">No new notifications</small>
                       {% endif %}
+                      {% for notif in current_user.get_old_notifs() %}
+                        <a class="dropdown-item" href="{{url_for('get_post', post_id=notif.post_id)}}">
+                          <img  class="account-img rounded" src="{{ url_for('static', filename='media/thumb' + notif.post.media) }}">
+
+                          <small><span class="font-weight-bold">{{ notif.author }}</span> {{ notif.msg }} your post.</small>
+                        </a>
+                      {% endfor %}
                     </div>
                   </li>
                   <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>

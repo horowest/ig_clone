@@ -51,10 +51,26 @@ class User(db.Model, UserMixin):
     def get_notifs(self):
         if self.new_notif():
             limit = len(self.notifs) - self.notif_count
-            print(len(self.notifs), self.notif_count)
-            self.notif_count = len(self.notifs)
-            db.session.commit()
-            return self.notifs[-limit:]
+            # print(len(self.notifs), self.notif_count)
+            l = self.notifs[-limit:]
+            l.reverse()
+            return l
+
+
+    def get_old_notifs(self):
+        limit = len(self.notifs) - self.notif_count
+        
+        self.notif_count = len(self.notifs)
+        db.session.commit()
+        
+        if limit == 0:
+            l = self.notifs[-4:]
+        else:
+            l = self.notifs[-4:-limit]
+        l.reverse()
+        return l
+        # print(self.notif_count, self.notifs[-4:])
+
 
     def new_notif(self):
         return len(self.notifs) > self.notif_count
