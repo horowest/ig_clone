@@ -10,7 +10,7 @@ from flaskapp.utils import save_picture, save_media
 @app.route("/")
 def home():
     if not current_user.is_authenticated:
-        return redirect(url_for('login'))
+        return redirect(url_for('register'))
 
     posts = current_user.get_followed_posts()
     return render_template("home.html", title="FlaskApp", posts=posts)
@@ -91,11 +91,11 @@ def get_post(post_id):
     post = Post.query.get_or_404(int(post_id))
 
     form = CommentPostForm()
-    return render_template("post.html", post=post, form=form) 
+    return render_template("post.html", post=post, form=form)
 
 
 
-@app.route("/post/<int:post_id>/delete") 
+@app.route("/post/<int:post_id>/delete")
 @login_required
 def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
@@ -115,7 +115,7 @@ def delete_post(post_id):
 @login_required
 def account():
     form = AccountUpdateForm()
-    
+
     if form.validate_on_submit():
         current_user.image_file = save_picture(form.picture.data, 'pfp')
         current_user.username = form.username.data
@@ -125,8 +125,8 @@ def account():
     # pre populate form
     if request.method == 'GET':
         form.username.data = current_user.username
-        
-    return render_template("account.html", title=current_user.username, 
+
+    return render_template("account.html", title=current_user.username,
                             form = form, image_url=current_user.image_file)
 
 
@@ -198,13 +198,13 @@ def make_comment(post_id):
 
         db.session.commit()
 
-        return jsonify(username=current_user.username, 
+        return jsonify(username=current_user.username,
                     user_url=url_for('get_user', username=current_user.username),
                     content=content, date_posted=c.date_posted.strftime('%d-%m-%Y'))
 
 
 
-@app.route("/comment/<int:com_id>/delete") 
+@app.route("/comment/<int:com_id>/delete")
 @login_required
 def delete_comment(com_id):
     com = Comment.query.get_or_404(com_id)
@@ -212,5 +212,5 @@ def delete_comment(com_id):
     if com.author == current_user:
         db.session.delete(com)
         db.session.commit()
-        
+
     return jsonify(result='')
