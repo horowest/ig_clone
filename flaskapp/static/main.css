@@ -73,9 +73,9 @@ a.user-link {
 }
 
 .up-info {
-    font-size: 25px;
+    font-size: 23px;
     cursor: pointer;
-    margin-right: 7px;
+    margin-right: 10px;
 }
 
 
@@ -102,4 +102,108 @@ span.comment:hover small.delete-comment {
     max-height: 9rem;
     overflow-y: auto;
     scroll-behavior: smooth;
+}
+
+
+.home-comment-box {
+    justify-content: space-between;
+    padding: 0rem 0.5rem 0 0.5rem;
+}
+
+.list-group-flush {
+    
+}
+
+.comment-box {
+    max-width: inherit;
+    word-wrap: break-word;
+    resize: none;
+    border: none;
+    margin-top: 0.5rem;
+    background-color: inherit;
+}
+
+textarea.comment-box { overflow: hidden; } 
+
+
+#upload {
+    opacity: 0;
+}
+
+#upload-label {
+    position: absolute;
+    top: 50%;
+    left: 1rem;
+    transform: translateY(-50%);
+}
+
+.modal-dialog {
+    width: 40rem;
+    margin: auto;
+}
+
+.modal-body {
+    padding: 0;
+}
+
+.modal-header {
+    border-bottom: none;
+}
+
+.post-caption-box {
+    justify-content: space-between;
+    padding: 0.5rem;
+}
+
+.caption-box {
+    max-width: inherit;
+    word-wrap: break-word;
+    resize: none;
+    border: none;
+}
+
+textarea.caption-box { overflow: hidden; }
+
+
+#flw {
+    margin-top: 1.9rem;
+    margin-left: -8rem;
+}
+
+.user-info {
+    padding: 0.2rem 1rem 2rem 0rem;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.img-wrapper
+{
+    position: relative;
+    width: 200px;
+    height: 200px;
+    overflow: hidden;
+}
+
+.post-img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+#imageResult {
+    max-height: 27rem;
+}
+
+.main-img-wrapper {
+    max-height: 35rem;
+    max-width: inherit;
+    overflow: hidden;
+}
+
+.card-img-top {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
