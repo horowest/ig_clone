@@ -1,90 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-<style>
-
-.modal-footer {
-    justify-content: space-between;
-    padding: 0rem 0.5rem 0 0.5rem;
-}
-
-.list-group-flush {
-    width: 85%;
-}
-
-.comment-box {
-    max-width: inherit;
-    word-wrap: break-word;
-    resize: none;
-    border: none;
-    margin-top: 0.5rem;
-    background-color: inherit;
-}
-
-textarea { overflow: hidden; } 
-
-</style>
-<script type=text/javascript>
-    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
-</script>
-<script type="text/javascript">
-    $(document).ready(function() {
-        $("textarea").val('');
-        // like a post
-        $(".like").click(function() {
-            
-            var post_id = $(this).attr('id');
-            var url = "/post/" + post_id + "/like";
-            $.get($SCRIPT_ROOT + url, 
-            function(data, success) {
-                // alert(data.result + " \nstatus: " + success);
-                var likeId = "#like-" + post_id;
-                var olddata = $(likeId).text();
-                $(likeId).text(data.result);
-                
-                // update like icon
-                if(data.result > olddata) {
-                    $('#' + post_id).addClass("liked");
-                    $('#' + post_id).html("<i class='fas fa-heart'></i>");
-                }
-                else {
-                    $('#' + post_id).removeClass("liked");
-                    $('#' + post_id).html("<i class='far fa-heart'></i>");
-                }
-            });
-        });
-
-        // post new comment
-        $(".post-comment").click(function() {
-                
-            var post_id = $(this).attr('id');
-            var msg = $("#comment-on-" + post_id).val();
-
-            // alert('comment ' + msg);
-            msg = $.trim(msg);
-            // aler(msg);
-            // return;
-            if(msg == '') {
-                alert("Cannot post empty comment");
-                return false;
-            }
-            var url = "/comment/" + post_id;
-            $.post($SCRIPT_ROOT + url,
-            {
-                msg: msg
-            },
-            function(data, success) {
-                //alert(data.content + '\n ' + success);
-                $("#comment-on-" + post_id).val('');
-
-                var comment = "<span class='comment'><a class='text-dark user-link' href='" 
-                    + data.user_url + "'>" + data.username + "</a> " + data.content + "</span>";
-
-                $("#comments-on-" + post_id).append(comment);
-            });
-        });
-    });
-</script>
-
     {% for post in posts %}
         <div class="card article">
             <div class="card-header">
@@ -93,7 +8,9 @@ textarea { overflow: hidden; }
             </div>
     
             {% if post.media %}
-                <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
+                <div class="main-img-wrapper bg-light">
+                    <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
+                </div>
             {% endif %}
             <div class="card-body pb-2">
                 <div class="card-text post-meta-data">
@@ -107,7 +24,7 @@ textarea { overflow: hidden; }
                     <span class="up-info"><i class="fa fa-share"></i></span>
                     
                     
-                    <small class=""><a class="float-right text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">view</a></small>
+                    <small class=""><a class="float-right text-muted" href="{{ url_for('get_post', post_id=post.pid) }}">View</a></small>
 
                     <div class="like-counter">
                         <span id="like-{{ post.pid }}" class="like-count">{{ post.get_likes_count() }}</span>
@@ -137,17 +54,11 @@ textarea { overflow: hidden; }
 
                 <small class="text-muted text-uppercase">{{ post.get_timeago() }}</small>
             </div>
-            <!-- <ul class="list-group list-group-flush">
-                <li class="list-group-item text-muted comment-box" id="make-comment" contentEditable="true">
-                    Add a comment..
-                </li>
-                <button class="btn comment-btn" id="post-comment">Comment</button>
-            </ul> -->
-            <div class="modal-footer">
-                <ul class="list-group list-group-flush">
-                <textarea class="text-muted comment-box make-comment" id="comment-on-{{ post.pid }}" placeholder="Add a comment.."></textarea>
-                <!-- <li class="list-group-item text-muted" id="make-comment" contentEditable="true">Add a comment..</li> -->
-            </ul>
+
+            <div class="modal-footer home-comment-box">
+                <ul class="list-group list-group-flush" style="width: 85%;">
+                    <textarea class="text-muted comment-box make-comment" id="comment-on-{{ post.pid }}" placeholder="Add a comment.."></textarea>
+                </ul>
             <button class="btn post-comment" id="{{ post.pid }}">Post</button>
           </div>
 

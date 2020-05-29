@@ -1,50 +1,5 @@
 {% extends "layout.html" %}
 {% block content %}
-<style>
-#upload {
-    opacity: 0;
-}
-
-#upload-label {
-    position: absolute;
-    top: 50%;
-    left: 1rem;
-    transform: translateY(-50%);
-}
-
-.modal-dialog {
-    width: 40rem;
-    margin: auto;
-}
-
-.modal-body {
-    padding: 0;
-}
-
-.modal-header {
-    border-bottom: none;
-}
-
-.modal-footer {
-    justify-content: space-between;
-    padding: 0.5rem;
-}
-
-.list-group-flush {
-    width: 85%;
-}
-
-.caption-box {
-    max-width: inherit;
-    word-wrap: break-word;
-    resize: none;
-    border: none;
-}
-
-textarea { overflow: hidden; }
-
-</style>
-
 <form method="POST" action="" enctype="multipart/form-data">
     {{ form.hidden_tag() }}
     <div class="card">
@@ -79,14 +34,13 @@ textarea { overflow: hidden; }
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <div class="modal-body">
-                <div class="image-area"><img id="imageResult" src="#" alt="" class="img-fluid shadow-sm mx-auto d-block  rounded-0"></div>
+            <div class="modal-body bg-light">
+                <div class="image-area"><img id="imageResult" src="#" alt="" class="img-fluid shadow-sm mx-auto d-block rounded-0"></div>
     
             </div>
-            <div class="modal-footer">
-                <ul class="list-group list-group-flush">
+            <div class="modal-footer post-caption-box">
+                <ul class="list-group list-group-flush" style="width: 85%;">
                     {{ form.content(class="text-muted caption-box", id="caption", placeholder="Add a caption..") }}
-                    <!-- <textarea class="list-group-item text-muted caption-box" id="caption" placeholder="Add a caption.."></textarea> -->
                     {% if form.content.errors %}
                             {% for error in form.content.errors %}
                                 <span>{{ error }}</span>
@@ -94,79 +48,43 @@ textarea { overflow: hidden; }
                     {% endif %}
                 </ul>
                 {{ form.submit(class="btn post-btn") }}
-              <!-- <button type="button" class="btn btn-dark post-btn">Post</button> -->
             </div>
           </div>
         </div>
-      </div>
+    </div>
 </form>
-    <!-- <div>
-        <form method="POST" action="" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <fieldset>
-                <legend>New post</legend>
-                <div class="form-group" >
-                    {{ form.content.label() }}
-                    <div>
-                        {{ form.content() }}
-                        {% if form.content.errors %}
-                            {% for error in form.content.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="form-group">
-                    {{ form.media.label() }}
-                    {{ form.media() }}
-                    <div>
-                        {% if form.media.errors %}
-                            {% for error in form.media.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
-                </div>
-            </fieldset>
-            <div>
-                {{ form.submit(class="btn btn-info") }}
-            </div>
-        </form>
-    </div> -->
 
-    <script type="text/javascript">
-        function readURL(input) {
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+<script type="text/javascript">
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
 
-                reader.onload = function (e) {
-                    $('#imageResult')
-                        .attr('src', e.target.result);
-                };
-                reader.readAsDataURL(input.files[0]);
-                
-                $('#exampleModalCenter').modal('show');
-            }
+            reader.onload = function (e) {
+                $('#imageResult')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+            
+            $('#exampleModalCenter').modal('show');
         }
+    }
 
-        $(function () {
-            $('#upload').on('change', function () {
-                readURL(input);
-            });
+    $(function () {
+        $('#upload').on('change', function () {
+            readURL(input);
         });
+    });
 
-        /*  ==========================================
-            SHOW UPLOADED IMAGE NAME
-        * ========================================== */
-        var input = document.getElementById( 'upload' );
-        var infoArea = document.getElementById( 'upload-label' );
+    /*  show uploaded image name */
+    var input = document.getElementById( 'upload' );
+    var infoArea = document.getElementById( 'upload-label' );
 
-        input.addEventListener('change', showFileName);
-        function showFileName( event ) {
-            var input = event.srcElement;
-            var fileName = input.files[0].name;
-            infoArea.textContent = 'File name: ' + fileName;
-        }
+    input.addEventListener('change', showFileName);
+    function showFileName( event ) {
+        var input = event.srcElement;
+        var fileName = input.files[0].name;
+        infoArea.textContent = 'File name: ' + fileName;
+    }
 
-    </script>
+</script>
 {% endblock %}
