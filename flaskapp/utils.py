@@ -35,5 +35,15 @@ def save_media(picture, pic_type):
     i = i.resize((bwidth, height), Image.ANTIALIAS)
     i.save(pic_path)
 
+    # save thumb now
+    j = Image.open(picture)
+
+    bwidth = 300
+    ratio = bwidth / float(j.size[0])
+    height = int((float(j.size[1]) * ratio))
+    j = j.resize((bwidth, height), Image.ANTIALIAS)
+    thumb_path = os.path.join(app.root_path, 'static/media/', 'thumb' + pic_fname)
+    j.save(thumb_path)
+
     # return filename
     return pic_fname
