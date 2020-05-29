@@ -57,7 +57,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('register'))
 
 
 
@@ -169,12 +169,13 @@ def unfollow_user():
 @login_required
 def post_likes(post_id):
     post = Post.query.get(int(post_id))
-    post.like_post(current_user)
+    r = post.like_post(current_user)
 
     # notify
     if post.author != current_user:
-        n = Notif.add_notif(current_user, post, 'liked')
-        db.session.add(n)
+        if r == "like":
+            n = Notif.add_notif(current_user, post, 'liked')
+            db.session.add(n)
 
     db.session.commit()
     return jsonify(result=post.get_likes_count())
