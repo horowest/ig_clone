@@ -97,3 +97,9 @@ a.user-link {
 span.comment:hover small.delete-comment {
     display: block;
 }
+
+.notif {
+    max-height: 9rem;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+}

@@ -43,6 +43,14 @@ class User(db.Model, UserMixin):
         secondaryjoin=(followers.c.follows_id == uid),
         backref=db.backref('followers', lazy='dynamic'), lazy='dynamic')
 
+    notifs = db.relationship('Notif', backref='notif_for', lazy=True)  
+
+
+    def get_notifs(self):
+        if len(self.notifs) > 4:
+            return self.notifs[-4:]
+        else:
+            return self.notifs
 
 
     def post_count(self):
@@ -146,3 +154,23 @@ class Comment(db.Model):
 
     def __repr__(self):
         return f"Comment({self.post_id}, {self.user_id}, '{self.content}', '{self.date_posted}')"
+
+
+
+class Notif(db.Model):
+    nid = db.Column(db.Integer, primary_key=True)
+    msg = db.Column(db.Text, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('post.pid'), nullable=False)
+    for_uid = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
+    author = db.Column(db.String(20), nullable=False)
+    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+
+    @staticmethod
+    def add_notif(user, post, n_type):
+        notif_for = post.author.uid
+        n = Notif(for_uid=notif_for, post_id=post.pid, msg=n_type, author=user.username)
+        return n
+
+    def __repr__(self):
+        return f"{self.author} {self.msg} your post({self.post_id})"

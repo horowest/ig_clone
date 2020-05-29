@@ -34,6 +34,18 @@
                     <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
                   <a class="nav-item nav-link" href="{{ url_for('new_post') }}">New Post</a>
                   <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Notifications
+                    </a>
+                    <div class="dropdown-menu notif" aria-labelledby="navbarDropdown">
+                      {% for notif in current_user.get_notifs() %}
+                        <a class="dropdown-item" href="{{url_for('get_post', post_id=notif.post_id)}}">
+                          <small><span class="font-weight-bold">{{ notif.author }}</span> {{ notif.msg }} your post.</small>
+                        </a>
+                      {% endfor %}
+                    </div>
+                  </li>
                   <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
                 {% else %}
                   <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
@@ -46,7 +58,7 @@
     </header>
     <main role="main" class="container">
         <div class="row justify-content-md-center main-content">
-            <div class="col-md-7" style="">
+            <div class="col-md-7">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                         {% for category, message in messages %}

@@ -1,7 +1,7 @@
 from flaskapp import app, db
 from flask import render_template, redirect, url_for, flash, request, jsonify
 from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm, CommentPostForm
-from flaskapp.models import User, Post, Comment
+from flaskapp.models import User, Post, Comment, Notif
 from flask_login import login_user, current_user, logout_user, login_required
 from flaskapp.utils import save_picture, save_media
 
@@ -170,6 +170,12 @@ def unfollow_user():
 def post_likes(post_id):
     post = Post.query.get(int(post_id))
     post.like_post(current_user)
+
+    # notify
+    if post.author != current_user:
+        n = Notif.add_notif(current_user, post, 'liked')
+        db.session.add(n)
+
     db.session.commit()
     return jsonify(result=post.get_likes_count())
 
@@ -183,7 +189,14 @@ def make_comment(post_id):
     if post:
         c = Comment(content=content, author=current_user, post_id=post_id)
         db.session.add(c)
+
+        # notify
+        if post.author != current_user:
+            n = Notif.add_notif(current_user, post, 'commented on')
+            db.session.add(n)
+
         db.session.commit()
+
         return jsonify(username=current_user.username, 
                     user_url=url_for('get_user', username=current_user.username),
                     content=content, date_posted=c.date_posted.strftime('%d-%m-%Y'))
