@@ -12,7 +12,13 @@ def home():
     if not current_user.is_authenticated:
         return redirect(url_for('register'))
 
-    posts = current_user.get_followed_posts()
+    start = 0
+    end = 3
+
+    if request.method == 'POST':
+        start = request.form['start']
+    posts = current_user.get_followed_posts().paginate(start, start + end, False).items
+
     return render_template("home.html", title="FlaskApp", posts=posts)
 
 
@@ -200,7 +206,7 @@ def make_comment(post_id):
 
         return jsonify(username=current_user.username,
                     user_url=url_for('get_user', username=current_user.username),
-                    content=content, date_posted=c.date_posted.strftime('%d-%m-%Y'))
+                    content=content, cid=c.cid, date_posted=c.date_posted.strftime('%d-%m-%Y'))
 
 
 
@@ -214,3 +220,8 @@ def delete_comment(com_id):
         db.session.commit()
 
     return jsonify(result='')
+
+
+@app.route("/explore")
+def explore():
+    return "Todo"
