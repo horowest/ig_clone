@@ -2,6 +2,7 @@ from datetime import datetime
 from flaskapp import db, login_manager
 from flask_login import UserMixin
 import timeago
+import random
 
 # User 
 # uid int
@@ -112,8 +113,26 @@ class User(db.Model, UserMixin):
         fw_users = [user.uid for user in self.follows.all()]
         fw_users.append(self.uid)       # to include my own posts
         # print(fw_users)
-        fw_posts = Post.query.order_by(Post.date_posted.desc()).filter(Post.user_id.in_(fw_users)).all()
+        fw_posts = Post.query.order_by(Post.date_posted.desc()).filter(Post.user_id.in_(fw_users))
         return fw_posts 
+
+
+    def get_user_suggestion(self):
+        user_follows = self.follows
+        avoid = [user.uid for user in user_follows]
+
+        # find sugg users
+        suggs = []
+        while len(suggs) < 2:
+            uid = random.randint(1, 6)
+            if uid not in avoid and uid != self.uid:
+                user = User.query.get(uid)
+                print(user)
+                if user and user not in suggs:
+                    suggs.append(user)
+
+        # print(suggs)
+        return suggs
 
 
     def __repr__(self):
