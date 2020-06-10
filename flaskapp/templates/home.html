@@ -1,5 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+<style>
+    .special {
+        margin-right: 25%;
+    }
+</style>
     {% for post in posts %}
         <div class="card article">
             <div class="card-header">
@@ -15,9 +20,9 @@
             <div class="card-body pb-2">
                 <div class="card-text post-meta-data">
                     {% if post.user_liked(current_user) %}
-                        <span id="{{ post.pid }}" class="up-info like liked"><i class='fas fa-heart'></i></span>
+                        <span id="l-{{ post.pid }}" class="up-info like liked"><i class='fas fa-heart'></i></span>
                     {% else %}
-                        <span id="{{ post.pid }}" class="up-info like"><i class='far fa-heart'></i></span>
+                        <span id="l-{{ post.pid }}" class="up-info like"><i class='far fa-heart'></i></span>
                     {% endif %}
 
                     <span class="up-info"><i class="far fa-comment"></i></span>
@@ -59,24 +64,40 @@
                 <ul class="list-group list-group-flush" style="width: 85%;">
                     <textarea class="text-muted comment-box make-comment" id="comment-on-{{ post.pid }}" placeholder="Add a comment.."></textarea>
                 </ul>
-            <button class="btn post-comment" id="{{ post.pid }}">Post</button>
+                <button class="btn post-comment" id="c-{{ post.pid }}">Post</button>
           </div>
 
         </div>
     {% endfor %}
 {% endblock content %}
 {% block sidebar %}
-<div class="col-md-3 sidebar">
+<div class="col-md-3 sidebar" style="position: fixed; float: right; right: 11%;">
     <div class="content-section">
-    <h3>Our Sidebar</h3>
-    <p class='text-muted'>You can put any information here you'd like.
-        <ul class="list-group">
-        <li class="list-group-item list-group-item-light">Latest Posts</li>
-        <li class="list-group-item list-group-item-light">Announcements</li>
-        <li class="list-group-item list-group-item-light">Calendars</li>
-        <li class="list-group-item list-group-item-light">etc</li>
-        </ul>
-    </p>
+    <h4 class="pb-2">
+        <img  class="side-account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + current_user.image_file) }}"> 
+        {{ current_user.username }}
+    </h4>
+    <small class='text-muted text-uppercase'>Suggestions for you to follow</small>
+    <ul class="list-group suggs">
+        {% for user in current_user.get_user_suggestion() %}
+            <li class="list-group-item list-group-item">
+                <img  class="account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + user.image_file) }}"> 
+                <a id="flw-{{user.uid}}" class="text-dark user-link" href="{{ url_for('get_user', username=user.username) }}">
+                    {{ user.username }}
+                </a>
+                {% if current_user.is_following(user) %}
+                    <a href="" class="mt-1 float-right flw-sug text-secondary" id="s-{{user.uid}}">Following</a>
+                {% elif user != current_user %}
+                    <a href="" class="mt-1 float-right flw-sug text-primary" id="s-{{user.uid}}">Follow</a>
+                {% endif %}
+                
+            </li>
+        {% endfor %}
+    </ul>
     </div>
 </div>
+
+<script>
+    
+</script>
 {% endblock sidebar %} 

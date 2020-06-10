@@ -2,35 +2,7 @@
 {% block content %}
 
     <script type=text/javascript>
-        $(document).ready(function() {
-            $("#flw").click(function() {
-                var t = $("#flw").text();
-                if(t == "Follow") {
-                    $.post($SCRIPT_ROOT + "{{ url_for('follow_user') }}", 
-                    { 
-                        username: $("#user").text() 
-                    }, 
-                    function(data, success) {
-                        //alert(data.result + " status: " + success);
-                        $("#flw").text('Following');
-                        $("#flw").removeClass('btn-primary');
-                        $("#flw").addClass('btn-secondary');
-                    });
-                }
-                else if(t == "Following") {
-                    $.post($SCRIPT_ROOT + "{{ url_for('unfollow_user') }}", 
-                    { 
-                        username: $("#user").text() 
-                    }, 
-                    function(data, success) {
-                        //alert(data.result + " status: " + success);
-                        $("#flw").text('Follow');
-                        $("#flw").removeClass('btn-secondary');
-                        $("#flw").addClass('btn-primary');
-                    });
-                }
-            }); 
-        }); 
+         
     </script>
 
     <div class="col-md-12">
@@ -43,20 +15,23 @@
                     <h1 id="user">{{ user.username }}</h1>
 
                     <ul class="list-group list-group-horizontal bg-light">
-                        <li class="user-info list-group-item border-0 bg-light">{{ user.posts.__len__() }} <a class="text-dark font-weight-normal" href="#posts">Posts</a></li>
-                        <li class="user-info list-group-item border-0 bg-light">{{ user.get_followers_count(user) }} <a class="text-dark font-weight-normal" href="">Follower</a></li>
-                        <li class="user-info list-group-item border-0 bg-light">{{ user.follows.count() }} <a class="text-dark font-weight-normal" href="">Following</a></li>
+                        <li class="user-info list-group-item border-0 bg-light">{{ user.posts.__len__() }} <span class="text-dark font-weight-normal" href="#posts">Posts</span></li>
+                        <li class="user-info list-group-item border-0 bg-light">{{ user.get_followers_count(user) }} <span  class="text-dark font-weight-normal" href="">Follower</span></li>
+                        <li class="user-info list-group-item border-0 bg-light">{{ user.follows.count() }} <span class="text-dark font-weight-normal" href="">Following</span></li>
                     </ul>
                 </div>
-                <div class="">
-                    <small class="">
-                        {% if current_user.is_following(user) %}
-                            <button class="btn btn-secondary" id="flw">Following</button>
-                        {% elif user != current_user %}
-                            <button class="btn btn-primary" id="flw">Follow</button>
-                        {% endif %}
-                    </small>
-                </div>
+                
+                {% if current_user.is_authenticated %}
+                    <div class="">
+                        <small class="">
+                                {% if current_user.is_following(user) %}
+                                    <button class="btn btn-secondary" id="flw">Following</button>
+                                {% elif user != current_user %}
+                                    <button class="btn btn-primary" id="flw">Follow</button>
+                                {% endif %}
+                        </small>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

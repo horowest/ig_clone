@@ -14,9 +14,9 @@
         <div class="card-body pb-2">
             <div class="card-text post-meta-data">
                 {% if post.user_liked(current_user) %}
-                        <span id="{{ post.pid }}" class="up-info like liked"><i class='fas fa-heart'></i></span>
+                        <span id="l-{{ post.pid }}" class="up-info like liked"><i class='fas fa-heart'></i></span>
                 {% else %}
-                    <span id="{{ post.pid }}" class="up-info like"><i class='far fa-heart'></i></span>
+                    <span id="l-{{ post.pid }}" class="up-info like"><i class='far fa-heart'></i></span>
                 {% endif %}
 
                 <span class="up-info"><i class="far fa-comment"></i></span>
@@ -52,8 +52,14 @@
             <small class="text-muted text-uppercase">{{ post.get_timeago() }}</small>
         </div>
         <ul class="list-group list-group-flush">
+            {% if current_user.is_authenticated %}
             <textarea class="text-muted comment-box make-comment border-bottom pl-2 pr-2" id="comment-on-{{ post.pid }}" placeholder="Add a comment.."></textarea>
-        <button class="btn post-comment" id="{{ post.pid }}">Post</button>
+            <button class="btn post-comment" id="c-{{ post.pid }}">Post</button>
+            {% else %}
+                <div class="p-2">
+                    <a href="{{ url_for('login') }}" class="text-muted">Login to comment</a>
+                </div>
+            {% endif %}
         </ul>
     </div>
 {% endblock content %}
