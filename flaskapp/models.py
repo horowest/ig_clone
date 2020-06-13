@@ -17,19 +17,20 @@ def load_user(user_id):
 
 
 followers = db.Table('followers',
-    db.Column('user_id', db.Integer, db.ForeignKey('user.uid')),
-    db.Column('follows_id', db.Integer, db.ForeignKey('user.uid'))
+    db.Column('user_id', db.Integer, db.ForeignKey('users.uid')),
+    db.Column('follows_id', db.Integer, db.ForeignKey('users.uid'))
 )
 
 
 likes = db.Table('likes',
-    db.Column('post_id', db.Integer, db.ForeignKey('post.pid')),
-    db.Column('user_id', db.Integer, db.ForeignKey('user.uid'))
+    db.Column('post_id', db.Integer, db.ForeignKey('posts.pid')),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.uid'))
 )
 
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = 'users'
     uid = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     password = db.Column(db.String(32), nullable=False)
@@ -146,11 +147,12 @@ class User(db.Model, UserMixin):
 
 
 class Post(db.Model):
+    __tablename__ = 'posts'
     pid = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
-    media = db.Column(db.String(20), nullable=True)
+    media = db.Column(db.String(32), nullable=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
 
     liked = db.relationship("User", secondary=likes)
     comments = db.relationship('Comment', backref='post', lazy=True)
@@ -196,10 +198,11 @@ class Post(db.Model):
 
 
 class Comment(db.Model):
+    __tablename__ = 'comments'
     cid = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.Text, nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.pid'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.pid'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
@@ -208,10 +211,11 @@ class Comment(db.Model):
 
 
 class Notif(db.Model):
+    __tablename__ = 'notifs'
     nid = db.Column(db.Integer, primary_key=True)
     msg = db.Column(db.Text, nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.pid'), nullable=False)
-    for_uid = db.Column(db.Integer, db.ForeignKey('user.uid'), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey('posts.pid'), nullable=False)
+    for_uid = db.Column(db.Integer, db.ForeignKey('users.uid'), nullable=False)
     author = db.Column(db.String(20), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
