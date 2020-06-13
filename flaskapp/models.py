@@ -120,16 +120,21 @@ class User(db.Model, UserMixin):
     def get_user_suggestion(self):
         user_follows = self.follows
         avoid = [user.uid for user in user_follows]
+        avoid.append(self.uid)
+
+        available_users = User.query.filter(User.uid.notin_(avoid)).all()        
+        if len(available_users) == 0:
+            return []
+        elif len(available_users) <= 2:
+            return available_users
 
         # find sugg users
         suggs = []
         while len(suggs) < 2:
-            uid = random.randint(1, 6)
-            if uid not in avoid and uid != self.uid:
-                user = User.query.get(uid)
-                print(user)
-                if user and user not in suggs:
-                    suggs.append(user)
+            index = random.randint(0, len(available_users)-1)
+            user = available_users[index]
+            if user not in suggs:
+                suggs.append(user)
 
         # print(suggs)
         return suggs
