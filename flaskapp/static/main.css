@@ -208,12 +208,6 @@ textarea.caption-box { overflow: hidden; }
     overflow: hidden;
 }
 
-.card-img-top {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
-}
-
 .suggs {
     border: none;
     background: inherit;
@@ -222,4 +216,10 @@ textarea.caption-box { overflow: hidden; }
 .side-account-img {
     height: 50px;
     width: 50px;
+}
+
+.card-img-top {
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
 }
