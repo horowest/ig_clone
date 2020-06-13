@@ -7,20 +7,63 @@ from flaskapp.utils import save_picture, save_media
 
 
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def home():
-    if not current_user.is_authenticated:
-        return redirect(url_for('register'))
+    if request.method == 'GET':
+        if not current_user.is_authenticated:
+            return redirect(url_for('register'))
+        return render_template("home.html", title="FlaskApp")
 
-    start = 0
-    end = 3
 
     if request.method == 'POST':
-        start = request.form['start']
-    posts = current_user.get_followed_posts().paginate(start, start + end, False).items
+        start = int(request.form.get('start') or 1)
+        # get posts
+        posts = current_user.get_followed_posts().paginate(start, 2, False).items
 
-    return render_template("home.html", title="FlaskApp", posts=posts)
+        result = []
+        for post in posts:
+            print(post.pid)
 
+            comments = []
+            for comment in post.get_comments(limit=2):
+                comments.append(
+                    {    
+                        'cid': comment.cid,
+                        'content': comment.content,
+                        'post_id': comment.post_id,
+                        'author': 
+                        {   
+                            'uid': comment.author.uid,
+                            'username': comment.author.username,
+                            'image_file': url_for('static', filename='profile_pics/' + comment.author.image_file),
+                            'user_url': url_for('get_user', username=comment.author.username)
+                        }
+                    }
+                )
+
+            result.append(
+                {
+                    'pid': post.pid,
+                    'content': post.content,
+                    'media': url_for('static', filename='media/' + post.media),
+                    'date_posted': post.date_posted,
+                    'post_url': url_for('get_post', post_id=post.pid),
+                    'liked': post.user_liked(current_user),
+                    'like_count': post.get_likes_count(),
+                    'timeago': post.get_timeago(),
+                    'author': 
+                    {   
+                        'uid': post.author.uid,
+                        'username': post.author.username,
+                        'image_file': url_for('static', filename='profile_pics/' + post.author.image_file),
+                        'user_url': url_for('get_user', username=post.author.username)
+                    },
+                    'comment_count': post.comments_count(),
+                    'comments': comments
+                }
+            )
+        status = True
+        return jsonify(result=result, success=status)
 
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -224,4 +267,58 @@ def delete_comment(com_id):
 
 @app.route("/explore")
 def explore():
-    return "Todo"
+    if request.method == 'GET':
+        if not current_user.is_authenticated:
+            return redirect(url_for('register'))
+        return render_template("home.html", title="FlaskApp")
+
+
+    if request.method == 'POST':
+        start = int(request.form.get('start') or 1)
+        # get posts
+        posts = Post.query.paginate(start, 2, False).items
+
+        result = []
+        for post in posts:
+            print(post.pid)
+
+            comments = []
+            for comment in post.get_comments(limit=2):
+                comments.append(
+                    {    
+                        'cid': comment.cid,
+                        'content': comment.content,
+                        'post_id': comment.post_id,
+                        'author': 
+                        {   
+                            'uid': comment.author.uid,
+                            'username': comment.author.username,
+                            'image_file': url_for('static', filename='profile_pics/' + comment.author.image_file),
+                            'user_url': url_for('get_user', username=comment.author.username)
+                        }
+                    }
+                )
+
+            result.append(
+                {
+                    'pid': post.pid,
+                    'content': post.content,
+                    'media': url_for('static', filename='media/' + post.media),
+                    'date_posted': post.date_posted,
+                    'post_url': url_for('get_post', post_id=post.pid),
+                    'liked': post.user_liked(current_user),
+                    'like_count': post.get_likes_count(),
+                    'timeago': post.get_timeago(),
+                    'author': 
+                    {   
+                        'uid': post.author.uid,
+                        'username': post.author.username,
+                        'image_file': url_for('static', filename='profile_pics/' + post.author.image_file),
+                        'user_url': url_for('get_user', username=post.author.username)
+                    },
+                    'comment_count': post.comments_count(),
+                    'comments': comments
+                }
+            )
+        status = True
+        return jsonify(result=result, success=status)
