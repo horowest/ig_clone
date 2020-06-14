@@ -2,13 +2,13 @@
 {% block content %}
     <div class="card article">
         <div class="card-header">
-            <img  class="account-img rounded-circle" src="{{ url_for('static', filename='profile_pics/' + post.author.image_file) }}">
+            <img  class="account-img rounded-circle" src="{{ get_file_url('profile_pics/' + post.author.image_file) }}">
             <a class="text-dark user-link" href="{{ url_for('get_user', username=post.author.username) }}">{{ post.author.username }}</a>
         </div>
 
         {% if post.media %}
             <div class="main-img-wrapper bg-light">
-                <img src="{{ url_for('static', filename='media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
+                <img src="{{ get_file_url('media/' + post.media) }}" class="card-img-top post-media rounded-0" alt="">
             </div>
         {% endif %}
         <div class="card-body pb-2">

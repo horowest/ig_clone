@@ -4,12 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
+    
+    <!-- CSS only -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}"> -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script>
-    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <!-- JS, fontawesome, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+    <!-- <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">
+
+    <!-- <script src='https://kit.fontawesome.com/a076d05399.js'></script> -->
 
     <script type=text/javascript>
       $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
@@ -25,7 +33,7 @@
     <header class="site-header">
         <nav class="navbar navbar-expand-md navbar-light border-bottom fixed-top">
           <div class="container">
-            <a class="navbar-brand mr-4" href="/">FlaskApp</a>
+            <a class="navbar-brand mr-4" href="/">Instaclone</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
               <span class="navbar-toggler-icon"></span>
             </button>
@@ -55,11 +63,13 @@
                         {% endfor %}
                       {% endif %}
                       {% for notif in current_user.get_old_notifs() %}
-                        <a class="dropdown-item" href="{{url_for('get_post', post_id=notif.post_id)}}">
-                          <img  class="account-img rounded" src="{{ url_for('static', filename='media/thumb' + notif.post.media) }}">
+                        <a class="dropdown-item" href="{{ url_for('get_post', post_id=notif.post_id) }}">
+                          <img  class="account-img rounded" src="{{ get_file_url('media/thumb' + notif.post.media) }}">
 
                           <small><span class="font-weight-bold">{{ notif.author }}</span> {{ notif.msg }} your post.</small>
                         </a>
+                      {% else %} 
+                      <small class="text-muted" style="margin-left:7px;">No new notifications</small>
                       {% endfor %}
                     </div>
                   </li>
@@ -75,6 +85,7 @@
     </header>
     <main role="main" class="container">
         <div class="row justify-content-md-center main-content">
+          {% block otherstuff %} {% endblock otherstuff %}
             <div class="col-md-7 special">
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
@@ -89,12 +100,11 @@
                     {% endif%}
                 {% endwith %}
                 {% block content %} {% endblock content %}
-            </div>
-                {% block sidebar %} {% endblock sidebar %}
-        </div>
+              </div>
+              {% block sidebar %} {% endblock sidebar %}
+          </div>
     </main>
 </body>
 
-<script type=text/javascript src="{{ url_for('static', filename='bootstrap.js') }}"></script>
 <script src="{{ url_for('static', filename='main.js') }}"></script>
 </html>

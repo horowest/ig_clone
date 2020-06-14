@@ -6,7 +6,7 @@
             <fieldset>
                 <legend>Update Account Info</legend>
                 <div class="float-left col-md-1">
-                    <img  class="rounded" src="{{ url_for('static', filename='profile_pics/' + image_url) }}">
+                    <img  class="rounded" src="{{ get_file_url('profile_pics/' + current_user.image_file) }}">
                 </div>
                 <div class="float-right">
                     <div class="form-group" >

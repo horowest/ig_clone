@@ -3,8 +3,7 @@ from flask import render_template, redirect, url_for, flash, request, jsonify
 from flaskapp.forms import RegistrationForm, LoginForm, PostForm, AccountUpdateForm, CommentPostForm
 from flaskapp.models import User, Post, Comment, Notif
 from flask_login import login_user, current_user, logout_user, login_required
-from flaskapp.utils import save_picture, save_media
-
+from flaskapp.utils import save_picture, save_media, get_file_url, delete_file
 
 
 @app.route("/", methods=['GET', 'POST'])
@@ -12,7 +11,7 @@ def home():
     if request.method == 'GET':
         if not current_user.is_authenticated:
             return redirect(url_for('register'))
-        return render_template("home.html", title="FlaskApp")
+        return render_template("home.html", title="Instaclone", get_file_url=get_file_url)
 
 
     if request.method == 'POST':
@@ -35,7 +34,7 @@ def home():
                         {   
                             'uid': comment.author.uid,
                             'username': comment.author.username,
-                            'image_file': url_for('static', filename='profile_pics/' + comment.author.image_file),
+                            'image_file': get_file_url('profile_pics/' + comment.author.image_file),
                             'user_url': url_for('get_user', username=comment.author.username)
                         }
                     }
@@ -45,7 +44,7 @@ def home():
                 {
                     'pid': post.pid,
                     'content': post.content,
-                    'media': url_for('static', filename='media/' + post.media),
+                    'media': get_file_url('media/' + post.media),
                     'date_posted': post.date_posted,
                     'post_url': url_for('get_post', post_id=post.pid),
                     'liked': post.user_liked(current_user),
@@ -55,7 +54,7 @@ def home():
                     {   
                         'uid': post.author.uid,
                         'username': post.author.username,
-                        'image_file': url_for('static', filename='profile_pics/' + post.author.image_file),
+                        'image_file': get_file_url('profile_pics/' + post.author.image_file),
                         'user_url': url_for('get_user', username=post.author.username)
                     },
                     'comment_count': post.comments_count(),
@@ -121,7 +120,7 @@ def new_post():
         db.session.commit()
         flash("Posted successfully", 'success')
         return redirect(url_for('home'))
-    return render_template("new_post.html", title="Post", form=form)
+    return render_template("new_post.html", title="Instaclone", form=form)
 
 
 
@@ -130,7 +129,7 @@ def get_user(username):
     user = User.query.filter_by(username=username).first_or_404()
     posts = user.posts
     posts.reverse()
-    return render_template("user.html", title=user.username, posts=posts, user=user)
+    return render_template("user.html", title=user.username, posts=posts, user=user, get_file_url=get_file_url)
 
 
 
@@ -140,7 +139,7 @@ def get_post(post_id):
     post = Post.query.get_or_404(int(post_id))
 
     form = CommentPostForm()
-    return render_template("post.html", post=post, form=form)
+    return render_template("post.html", post=post, form=form, get_file_url=get_file_url)
 
 
 
@@ -150,6 +149,9 @@ def delete_post(post_id):
     post = Post.query.get_or_404(post_id)
 
     if post.author == current_user:
+        db.session.query(Comment).filter(Comment.post_id == post.pid).delete()
+        db.session.query(Notif).filter(Notif.post_id == post.pid).delete()
+        delete_file(post.media)
         db.session.delete(post)
         db.session.commit()
         flash("Post deleted", 'success')
@@ -175,8 +177,8 @@ def account():
     if request.method == 'GET':
         form.username.data = current_user.username
 
-    return render_template("account.html", title=current_user.username,
-                            form = form, image_url=current_user.image_file)
+    return render_template("account.html", title='Account',
+                            form = form, image_url=current_user.image_file, get_file_url=get_file_url)
 
 
 
@@ -265,59 +267,27 @@ def delete_comment(com_id):
     return jsonify(result='')
 
 
-@app.route("/explore")
+@app.route("/explore", methods=['GET', 'POST'])
 def explore():
     if request.method == 'GET':
         if not current_user.is_authenticated:
             return redirect(url_for('register'))
-        return render_template("home.html", title="FlaskApp")
+        return render_template("explore.html", title="Explore")
 
 
     if request.method == 'POST':
         start = int(request.form.get('start') or 1)
         # get posts
-        posts = Post.query.paginate(start, 2, False).items
+        posts = Post.query.paginate(start, 3, False).items
 
         result = []
         for post in posts:
             print(post.pid)
 
-            comments = []
-            for comment in post.get_comments(limit=2):
-                comments.append(
-                    {    
-                        'cid': comment.cid,
-                        'content': comment.content,
-                        'post_id': comment.post_id,
-                        'author': 
-                        {   
-                            'uid': comment.author.uid,
-                            'username': comment.author.username,
-                            'image_file': url_for('static', filename='profile_pics/' + comment.author.image_file),
-                            'user_url': url_for('get_user', username=comment.author.username)
-                        }
-                    }
-                )
-
             result.append(
                 {
-                    'pid': post.pid,
-                    'content': post.content,
-                    'media': url_for('static', filename='media/' + post.media),
-                    'date_posted': post.date_posted,
+                    'media': get_file_url('media/mid' + post.media),
                     'post_url': url_for('get_post', post_id=post.pid),
-                    'liked': post.user_liked(current_user),
-                    'like_count': post.get_likes_count(),
-                    'timeago': post.get_timeago(),
-                    'author': 
-                    {   
-                        'uid': post.author.uid,
-                        'username': post.author.username,
-                        'image_file': url_for('static', filename='profile_pics/' + post.author.image_file),
-                        'user_url': url_for('get_user', username=post.author.username)
-                    },
-                    'comment_count': post.comments_count(),
-                    'comments': comments
                 }
             )
         status = True
