@@ -21,7 +21,7 @@ def home():
 
         result = []
         for post in posts:
-            print(post.pid)
+            # print(post.pid)
 
             comments = []
             for comment in post.get_comments(limit=2):
@@ -138,8 +138,7 @@ def get_post(post_id):
     # post_id = request.args.get('post_id')
     post = Post.query.get_or_404(int(post_id))
 
-    form = CommentPostForm()
-    return render_template("post.html", post=post, form=form, get_file_url=get_file_url)
+    return render_template("post.html", title="Instaclone", post=post, get_file_url=get_file_url)
 
 
 
@@ -171,7 +170,7 @@ def account():
         current_user.image_file = save_picture(form.picture.data, 'pfp')
         current_user.username = form.username.data
         db.session.commit()
-        flash("Account infoo updated", 'success')
+        flash("Account updated", 'success')
         return redirect(url_for('account'))
     # pre populate form
     if request.method == 'GET':
@@ -282,7 +281,7 @@ def explore():
 
         result = []
         for post in posts:
-            print(post.pid)
+            # print(post.pid)
 
             result.append(
                 {
