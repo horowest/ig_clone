@@ -184,3 +184,89 @@ $(document).ready(function() {
     // delete a comment 
     $(".delete-comment").click(delete_comment);
 });
+
+
+// article template
+function template(post) {
+
+    let liked = '';
+    let icon = 'r';
+
+    if(post.liked == true) {
+        // console.log(post.pid, 'liked');
+        liked = 'd';
+        icon = 's';
+    }
+    
+    let content = `<div class="card article">
+            <div class="card-header">
+                <img  class="account-img rounded-circle" src="${post.author.image_file}">
+                <a class="text-dark user-link" href="${post.author.user_url}">${post.author.username}</a>
+            </div>
+    
+                <div class="main-img-wrapper bg-light">
+                    <img src="${post.media}" class="card-img-top post-media rounded-0" alt="">
+                </div>
+
+            <div class="card-body pb-2">
+                <div class="card-text post-meta-data">
+                    <span id="l-${post.pid}" class="up-info like${liked}"><i class='fa${icon} fa-heart'></i></span>
+
+                    <span class="up-info"><i class="far fa-comment"></i></span>
+                    <span class="up-info"><i class="fa fa-share"></i></span>
+                    
+                    
+                    <small class=""><a class="float-right text-muted" href="${post.post_url}">View</a></small>
+
+                    <div class="like-counter">
+                        <span id="like-${post.pid}" class="like-count">${post.like_count}</span>
+                        likes
+                    </div>
+            
+                </div>`;
+                if(post.content.length > 0 ) {
+                    content = content + 
+                    `<span class="card-text"> 
+                            <a class="text-dark user-link " href="${post.author.user_url}">${post.author.username}</a>
+                            ${post.content}
+                    </span>`;
+                }
+                content = content + 
+                `<div class="comments" id="comments-on-${post.pid}">`;
+                    if (post.comment_count > 2) {
+                        content = content + 
+                        `<a class="text-muted" href="${post.post_url}">View all ${post.comment_count} comments</a>`;
+                    }
+                    post.comments.forEach(comment => {
+                        content = content + 
+                        `<span class="comment" id="c${comment.cid }">
+                        <a class="text-dark user-link" href="${comment.author.user_url}">${comment.author.username}</a>
+                            ${comment.content}
+                        </span>`
+                    });
+                content = content + `</div>
+                <small class="text-muted text-uppercase">${post.timeago}</small>
+            </div>
+
+            <div class="modal-footer home-comment-box">
+                <ul class="list-group list-group-flush" style="width: 85%;">
+                    <textarea class="text-muted comment-box make-comment" id="comment-on-${post.pid}" placeholder="Add a comment.."></textarea>
+                </ul>
+                <button class="btn post-comment" id="c-${post.pid}">Post</button>
+        </div>
+    </div>`;
+
+    return content;
+};
+
+
+// explore post template
+function explore_template(post) {
+
+    let content = `<div class="col p-2 img-wrapper rounded">
+                    <a href="${post.post_url}"><img class="post-img" src="${post.media}"></a>
+            </div>
+    </div>`;
+
+    return content;
+};
