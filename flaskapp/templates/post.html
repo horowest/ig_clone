@@ -20,7 +20,7 @@
                 {% endif %}
 
                 <span class="up-info"><i class="far fa-comment"></i></span>
-                <span class="up-info"><i class="fa fa-share"></i></span>
+                <span id="sh-{{ post.pid }}" class="up-info share"><i class="fa fa-share"></i></span>
                 
                 {% if post.author == current_user %}
                     <small class="float-right"><a class="text-danger" href="{{ url_for('delete_post', post_id=post.pid) }}">delete post</a></small>

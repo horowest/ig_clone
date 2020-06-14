@@ -98,6 +98,8 @@ function delete_comment(e) {
 
 $(document).ready(function() {
 
+    document.querySelector('.share').onclick = link_share;
+
     $('.post-comment').attr("disabled", true);
 
     $('.make-comment').on('keyup', enable_disable_button);
@@ -212,8 +214,10 @@ function template(post) {
                 <div class="card-text post-meta-data">
                     <span id="l-${post.pid}" class="up-info like${liked}"><i class='fa${icon} fa-heart'></i></span>
 
-                    <span class="up-info"><i class="far fa-comment"></i></span>
-                    <span class="up-info"><i class="fa fa-share"></i></span>
+                    <span class="up-info">
+                        <a class="text-dark" href="${post.post_url}"><i class="far fa-comment"></i></a>
+                    </span>
+                    <span id="sh-${post.pid}" class="up-info"><i class="fa fa-share"></i></span>
                     
                     
                     <small class=""><a class="float-right text-muted" href="${post.post_url}">View</a></small>
@@ -270,3 +274,18 @@ function explore_template(post) {
 
     return content;
 };
+
+
+function link_share() {
+    const pid = this.id.split('-')[1];
+    const link = window.location.host + $SCRIPT_ROOT + '/post/id/' + pid;
+    
+    var dummy = document.createElement("textarea");
+    document.body.appendChild(dummy);
+    dummy.value = link;
+    dummy.select();
+    document.execCommand("copy");
+    document.body.removeChild(dummy);
+
+    alert("Link copied: " + link);
+}

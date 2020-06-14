@@ -43,6 +43,7 @@
                         const content = template(post);
                         $('.special').append(content);
                         // add event handlers
+                        document.querySelector(`#sh-${post.pid}`).onclick = link_share;
                         document.querySelector(`#l-${post.pid}`).onclick = like_post;
                         document.querySelector(`#c-${post.pid}`).onclick = comment_handler;
                         document.querySelector(`#c-${post.pid}`).disabled = true;
