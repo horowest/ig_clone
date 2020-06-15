@@ -1,18 +1,18 @@
 # Ig_clone
 
-![Image 1](https://raw.githubusercontent.com/himanshup/instagram-clone/master/screenshots/image1.png)  
+![Image 1](https://raw.githubusercontent.com/horowest/ig_clone/master/flaskapp/static/cover/pic.png)  
 An instagram like clone built with python and flask.
 
 ## Features
 
-- Sign up for an account and edit avatar/username later on
 - Upload images with captions and option to delete posts.
 - Comment on posts and option to delete them
 - Like/unlike posts
 - Follow/unfollow users
 - Feed consists of posts from users you follow 
--'Explore' page has posts from every user
+-'Explore' page shows posts from all users
 - Notifications on activities on your posts.
+- Change profile pic and username
 
 ## Features to add
 - Tag feature
