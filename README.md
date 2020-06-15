@@ -13,6 +13,7 @@ An instagram like clone built with python and flask.
 -'Explore' page shows posts from all users
 - Notifications on activities on your posts.
 - Change profile pic and username
+- Suggestions to follow users
 
 ## Features to add
 - Tag feature
