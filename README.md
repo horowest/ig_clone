@@ -37,7 +37,7 @@ pip install -r requirements.txt
 Set environments for the following following:
 
 ```
-DATABASEURL=postgres://localhost/<dbname>
+DATABASEURL=postgresql://<host><:port>/<database_name>
 S3_BUCKET=<bucket_name>
 S3_ACCESS_KEY=<access_key>
 S3_SECRET_KEY=<secret_key>
