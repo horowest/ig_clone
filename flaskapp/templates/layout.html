@@ -6,7 +6,7 @@
 
     
     <!-- CSS only -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css">
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"> -->
     <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='bootstrap.css') }}"> -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
@@ -16,7 +16,8 @@
     <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
     <!-- <script type=text/javascript src="{{ url_for('static', filename='jquery.js') }}"></script> -->
     <script type=text/javascript src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://use.fontawesome.com/releases/v5.0.13/js/all.js"></script>
+    
+    <script src="https://kit.fontawesome.com/6cd5fe2e76.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 
@@ -44,14 +45,22 @@
               <!-- Navbar Right Side -->
               <div class="navbar-nav">
                 {% if current_user.is_authenticated %}
-                  <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
-                  <a class="nav-item nav-link" href="{{ url_for('explore') }}">Explore</a>
-                  <a class="nav-item nav-link" href="{{ url_for('new_post') }}">New Post</a>
-                  <a class="nav-item nav-link" href="{{ url_for('account') }}">Account</a>
+                  <a class="nav-item nav-link nav-icons" href="{{ url_for('home') }}">
+                    <i class="fa fa-home" aria-hidden="true"></i>
+                  </a>
+                  <a class="nav-item nav-link nav-icons" href="{{ url_for('explore') }}">
+                    <i class="fa fa-compass" aria-hidden="true"></i>
+                  </a>
+                  <a class="nav-item nav-link nav-icons" href="{{ url_for('new_post') }}">
+                    <i class="far fa-edit"></i>
+                  </a>
+                  <a class="nav-item nav-link nav-icons" href="{{ url_for('account') }}">
+                    <i class="far fa-user-circle"></i>
+                  </a>
                   <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle nav-icons" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       {% if current_user.new_notif() %}<span class="text-danger">* </span>{% endif %}
-                      Notifications
+                      <i class="fa fa-bell-o"></i>
                     </a>
                     <div class="dropdown-menu notif" aria-labelledby="navbarDropdown">
                       {% if current_user.new_notif() %}
@@ -74,7 +83,9 @@
                       {% endfor %}
                     </div>
                   </li>
-                  <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                  <a class="nav-item nav-link nav-icons" href="{{ url_for('logout') }}">
+                    <i class="fa fa-sign-out"></i>
+                  </a>
                 {% else %}
                   <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
                   <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
