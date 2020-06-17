@@ -120,7 +120,7 @@ def new_post():
         db.session.commit()
         flash("Posted successfully", 'success')
         return redirect(url_for('home'))
-    return render_template("new_post.html", title="Instaclone", form=form)
+    return render_template("new_post.html", title="Instaclone", form=form, get_file_url=get_file_url)
 
 
 
@@ -271,7 +271,7 @@ def explore():
     if request.method == 'GET':
         if not current_user.is_authenticated:
             return redirect(url_for('register'))
-        return render_template("explore.html", title="Explore")
+        return render_template("explore.html", title="Explore", get_file_url=get_file_url)
 
 
     if request.method == 'POST':
