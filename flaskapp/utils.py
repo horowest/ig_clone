@@ -21,7 +21,7 @@ def save_picture(picture, pic_type):# open s3 instance
     i.thumbnail(OUT_SIZE[pic_type])
     i.save(pic_path)
 
-    s3.meta.client.upload_file(pic_path, S3_BUCKET, 'profile_pics/' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext})
+    s3.meta.client.upload_file(pic_path, S3_BUCKET, 'profile_pics/' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext[1:]})
 
     # return filename
     return pic_fname
@@ -44,7 +44,7 @@ def save_media(picture, pic_type):
     i = i.resize((bwidth, height), Image.ANTIALIAS)
     i.save(pic_path)
 
-    s3.meta.client.upload_file(pic_path, S3_BUCKET, 'media/' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext})
+    s3.meta.client.upload_file(pic_path, S3_BUCKET, 'media/' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext[1:]})
 
     # save thumb now
     j = Image.open(picture)
@@ -56,7 +56,7 @@ def save_media(picture, pic_type):
     thumb_path = os.path.join(app.root_path, 'static/media/', 'thumb' + pic_fname)
     j.save(thumb_path)
 
-    s3.meta.client.upload_file(thumb_path, S3_BUCKET, 'media/thumb' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext})
+    s3.meta.client.upload_file(thumb_path, S3_BUCKET, 'media/thumb' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext[1:]})
     # save display image for explore and user page
     k = Image.open(picture)
 
@@ -67,7 +67,7 @@ def save_media(picture, pic_type):
     mid_path = os.path.join(app.root_path, 'static/media/', 'mid' + pic_fname)
     k.save(mid_path)
 
-    s3.meta.client.upload_file(mid_path, S3_BUCKET, 'media/mid' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext})
+    s3.meta.client.upload_file(mid_path, S3_BUCKET, 'media/mid' + pic_fname, ExtraArgs={'ACL': 'public-read', 'ContentType': 'image/' + f_ext[1:]})
 
     # return filename
     return pic_fname
