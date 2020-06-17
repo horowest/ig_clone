@@ -10,7 +10,7 @@ An instagram like clone built with python and flask.
 - Like/unlike posts
 - Follow/unfollow users
 - Feed consists of posts from users you follow 
--'Explore' page shows posts from all users
+- Explore page shows posts from all users
 - Notifications on activities on your posts.
 - Change profile pic and username
 - Suggestions to follow users
