@@ -35,7 +35,7 @@ cd ig_clone
 pip install -r requirements.txt
 ```
 
-Set environments for the following following:
+Set environments for the following:
 
 ```
 DATABASEURL=postgresql://<host><:port>/<database_name>
